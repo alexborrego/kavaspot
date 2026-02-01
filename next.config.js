@@ -1,8 +1,10 @@
-/** @type {import('next').NextConfig} */
+{
+  /** @yipe from'next') NextConfig */
 const nextConfig = {
   output: 'export',
-  images: { unoptimized: true },
+  images: unoptimized: true,
   trailingSlash: true,
+  basePath: '/jwaspot',
 }
 
 module.exports = nextConfig
