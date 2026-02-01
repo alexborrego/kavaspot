@@ -1,34 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
-// Verified local kava bars
-const bars = [
-  { name: 'Grassroots Kava House', address: '957 Central Ave, St. Pete', hours: '7am-12am', vibe: 'Community Hub', image: '🌿', featured: true },
-  { name: 'Speakeasy Kava', address: '2101 Central Ave, St. Pete', hours: '7am-1am', vibe: 'Late Night', image: '🔮' },
-  { name: 'Bula Kafe', address: '2500 5th Ave N, St. Pete', hours: '7am-10pm', vibe: 'Original', image: '🏝️', featured: true },
-  { name: 'Mad Hatters Kava Bar', address: '4685 28th St N, St. Pete', hours: '24/7', vibe: 'Events', image: '🎩' },
-  { name: 'Kava House Brand', address: '11141 US Hwy 19 N, Clearwater', hours: '10am-2am', vibe: 'Sports', image: '🍃' },
-];
+interface Bar {
+  id: string;
+  name: string;
+  address: string;
+  hours: string;
+  vibe: string;
+  image: string;
+  featured: boolean;
+}
 
-// Weekly recurring events - verified from bar websites
-const events = [
-  { id: 2, bar: 'Mad Hatters Kava Bar', name: 'Karaoke', day: 'Friday', date: 'Feb 7', time: '9pm', type: 'Music', image: '🎤', location: '4685 28th St N, St. Pete', description: 'Weekly karaoke with words on the big projector screen. Hosted by Michelle. Some themed nights - check social media.' },
-  { id: 3, bar: 'Grassroots Kava House', name: 'Trivia Night', day: 'Thursday', date: 'Feb 6', time: '7pm', type: 'Social', image: '🧠', location: '957 Central Ave, St. Pete', description: 'Weekly trivia with prizes. Hosted by Answers R In at St. Pete\'s original kava bar.' },
-  { id: 4, bar: 'Speakeasy Kava', name: 'Trivia Night', day: 'Wednesday', date: 'Feb 5', time: '7pm', type: 'Social', image: '❓', location: '2101 Central Ave, St. Pete', description: 'Weekly trivia night. Test your knowledge and win prizes. $3 kava shells all night.' },
-  { id: 5, bar: 'Mad Hatters Kava Bar', name: 'Open Mic Night', day: 'Sunday', date: 'Feb 9', time: '7pm', type: 'Music', image: '🎸', location: '4685 28th St N, St. Pete', description: 'Free pool all day + Open Mic on the patio. Bring an instrument or just vibe. Free entry.' },
-  { id: 6, bar: 'Grassroots Kava House', name: 'Open Mic', day: 'Sunday', date: 'Feb 9', time: '6pm', type: 'Music', image: '🎹', location: '957 Central Ave, St. Pete', description: 'Open mic night at the community hub. All styles welcome - music, poetry, comedy.' },
-  { id: 7, bar: 'Kava House Brand', name: 'Karaoke Night', day: 'Saturday', date: 'Feb 8', time: '9pm', type: 'Music', image: '🎶', location: '11141 US Hwy 19 N, Clearwater', description: 'Weekly karaoke at HWY 19. Bring your friends and your best vocals.' },
-  { id: 8, bar: 'Speakeasy Kava', name: 'Karaoke', day: 'Saturday', date: 'Feb 8', time: '10pm', type: 'Music', image: '🎤', location: '2101 Central Ave, St. Pete', description: 'Late night karaoke at Speakeasy Central. Host Jamicheal J. Open mic format.' },
-];
+interface Event {
+  id: string;
+  bar: string;
+  name: string;
+  day: string;
+  date: string;
+  time: string;
+  type: string;
+  image: string;
+  location: string;
+  description: string;
+  featured: boolean;
+}
 
-// Verified weekly deals
-const deals = [
-  { bar: 'Mad Hatters Kava Bar', offer: '$3 Kava Shells (Unicorn & Faceplant)', code: 'WED3', expires: 'Wednesday nights' },
-  { bar: 'Speakeasy Kava', offer: '$5 Bombs all night', code: 'FRI5', expires: 'Friday nights' },
-  { bar: 'Grassroots Kava House', offer: '$10 Trivia = 10 games', code: 'TRIVIA10', expires: 'Thursday nights' },
-  { bar: 'Bula Kafe', offer: 'Free shot with flight', code: 'BULA10', expires: 'New customers' },
-];
+interface Deal {
+  id: string;
+  bar: string;
+  offer: string;
+  code: string;
+  expires: string;
+}
 
 const categories = [
   { id: 'All', label: 'All', icon: '✨' },
@@ -45,9 +50,35 @@ const navItems = [
 export default function Home() {
   const [activeTab, setActiveTab] = useState('events');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [showModal, setShowModal] = useState<typeof events[0] | null>(null);
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [showModal, setShowModal] = useState<Event | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [bars, setBars] = useState<Bar[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [barsData, eventsData, dealsData] = await Promise.all([
+        supabase.from('bars').select('*').order('name'),
+        supabase.from('events').select('*').order('name'),
+        supabase.from('deals').select('*').order('bar'),
+      ]);
+
+      if (barsData.data) setBars(barsData.data);
+      if (eventsData.data) setEvents(eventsData.data);
+      if (dealsData.data) setDeals(dealsData.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredEvents = events.filter(event => {
     const matchesCategory = selectedCategory === 'All' || event.type === selectedCategory;
@@ -56,11 +87,32 @@ export default function Home() {
     return matchesCategory && matchesSearch;
   });
 
-  const toggleFavorite = (id: number) => {
+  const featuredEvent = events.find(e => e.featured);
+  const featuredBar = bars.find(b => b.featured);
+
+  const toggleFavorite = (id: string) => {
     setFavorites(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
   };
 
   const eventTypes = ['All', 'Social', 'Music'];
+
+  const getCurrentDate = () => {
+    const now = new Date();
+    return {
+      day: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      weekday: now.toLocaleDateString('en-US', { weekday: 'long' }),
+    };
+  };
+
+  const { day: currentDay, weekday: currentWeekday } = getCurrentDate();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-900 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans pb-20">
@@ -83,8 +135,8 @@ export default function Home() {
             <p className="text-emerald-200 text-sm">{filteredEvents.length} events • {bars.length} bars</p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold">Jan 31</p>
-            <p className="text-emerald-200 text-xs">Saturday</p>
+            <p className="text-2xl font-bold">{currentDay}</p>
+            <p className="text-emerald-200 text-xs">{currentWeekday}</p>
           </div>
         </div>
         
@@ -125,19 +177,19 @@ export default function Home() {
         {activeTab === 'events' && (
           <div className="space-y-4">
             {/* Featured */}
-            {selectedCategory === 'All' && !searchQuery && filteredEvents.length > 0 && (
+            {selectedCategory === 'All' && !searchQuery && featuredEvent && (
               <div 
-                onClick={() => setShowModal(filteredEvents[0])}
+                onClick={() => setShowModal(featuredEvent)}
                 className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl p-5 text-white shadow-lg active:scale-[0.98] transition-transform cursor-pointer"
               >
                 <div className="flex items-start justify-between mb-3">
                   <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">⭐ Featured</span>
-                  <span className="text-3xl">{filteredEvents[0].image}</span>
+                  <span className="text-3xl">{featuredEvent.image}</span>
                 </div>
-                <h3 className="text-xl font-bold mb-1">{filteredEvents[0].name}</h3>
-                <p className="text-emerald-100 text-sm mb-3">{filteredEvents[0].bar}</p>
+                <h3 className="text-xl font-bold mb-1">{featuredEvent.name}</h3>
+                <p className="text-emerald-100 text-sm mb-3">{featuredEvent.bar}</p>
                 <div className="flex items-center gap-4 text-xs text-emerald-100">
-                  <span>📅 {filteredEvents[0].day} @ {filteredEvents[0].time}</span>
+                  <span>📅 {featuredEvent.day} @ {featuredEvent.time}</span>
                   <span>📍 St. Pete</span>
                 </div>
               </div>
@@ -158,7 +210,7 @@ export default function Home() {
                     className="bg-white rounded-xl border border-gray-100 shadow-sm active:scale-[0.98] transition-transform cursor-pointer overflow-hidden"
                   >
                     <div className="flex">
-                      <div className="w-24 bg-gradient-to-br from-emerald-50 to-emerald-100 flex flex-col items-center justify-center p-3">
+                      <div class24 bg-gradient-toName="w--br from-emerald-50 to-emerald-100 flex flex-col items-center justify-center p-3">
                         <span className="text-2xl mb-1">{event.image}</span>
                         <span className="text-xs font-semibold text-emerald-700">{event.day}</span>
                       </div>
@@ -192,23 +244,25 @@ export default function Home() {
         {activeTab === 'bars' && (
           <div className="space-y-4">
             {/* Featured Bar */}
-            <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 text-white shadow-lg">
-              <div className="flex items-start justify-between mb-3">
-                <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">🏆 Best of the Bay</span>
-                <span className="text-3xl">🏝️</span>
+            {featuredBar && (
+              <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 text-white shadow-lg">
+                <div className="flex items-start justify-between mb-3">
+                  <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">🏆 Best of the Bay</span>
+                  <span className="text-3xl">{featuredBar.image}</span>
+                </div>
+                <h3 className="text-xl font-bold mb-1">{featuredBar.name}</h3>
+                <p className="text-emerald-100 text-sm mb-3">{featuredBar.address}</p>
+                <div className="flex gap-2">
+                  <span className="text-xs bg-white/20 px-2 py-0.5 rounded">{featuredBar.hours}</span>
+                  <span className="text-xs bg-white/20 px-2 py-0.5 rounded">{featuredBar.vibe}</span>
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-1">Bula Kafe</h3>
-              <p className="text-emerald-100 text-sm mb-3">2500 5th Ave N, St. Pete</p>
-              <div className="flex gap-2">
-                <span className="text-xs bg-white/20 px-2 py-0.5 rounded">7am-10pm</span>
-                <span className="text-xs bg-white/20 px-2 py-0.5 rounded">Tampa Bay's Original Kava Bar</span>
-              </div>
-            </div>
+            )}
 
             {/* Bar List */}
             <div className="space-y-3">
-              {bars.map((bar, i) => (
-                <div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+              {bars.map((bar) => (
+                <div key={bar.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center text-2xl">
                       {bar.image}
@@ -232,7 +286,7 @@ export default function Home() {
           <div className="space-y-3">
             {deals.map((deal, i) => (
               <div 
-                key={i} 
+                key={deal.id} 
                 className={`rounded-xl p-4 shadow-sm ${
                   i === 0 ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-white' : 'bg-emerald-900 text-white'
                 }`}

@@ -1,0 +1,219 @@
+[
+  {
+    "name": "Mad Hatters Kava Bar",
+    "address": "4685 28th St N, St. Petersburg, FL 33714",
+    "phone": "",
+    "website": "https://www.madhattersteabar.com",
+    "instagram": "@madhatterskavabar",
+    "city": "St. Pete",
+    "hours": {
+      "0": [
+        "07:00",
+        "02:00"
+      ],
+      "1": [
+        "07:00",
+        "02:00"
+      ],
+      "2": [
+        "07:00",
+        "02:00"
+      ],
+      "3": [
+        "07:00",
+        "02:00"
+      ],
+      "4": [
+        "07:00",
+        "02:00"
+      ],
+      "5": [
+        "07:00",
+        "03:00"
+      ],
+      "6": [
+        "07:00",
+        "03:00"
+      ]
+    }
+  },
+  {
+    "name": "Speakeasy Kava Central",
+    "address": "2101 Central Ave, St. Petersburg, FL 33713",
+    "phone": "727-329-9915",
+    "website": "https://speakeasykavabar.com",
+    "instagram": "@speakeasykava",
+    "city": "St. Pete",
+    "hours": {
+      "0": [
+        "07:00",
+        "01:00"
+      ],
+      "1": [
+        "07:00",
+        "01:00"
+      ],
+      "2": [
+        "07:00",
+        "01:00"
+      ],
+      "3": [
+        "07:00",
+        "01:00"
+      ],
+      "4": [
+        "07:00",
+        "01:00"
+      ],
+      "5": [
+        "07:00",
+        "01:00"
+      ],
+      "6": [
+        "07:00",
+        "01:00"
+      ]
+    }
+  },
+  {
+    "name": "Speakeasy Kava Largo",
+    "address": "12514 Starkey Rd, Largo, FL 33773",
+    "phone": "727-351-2672",
+    "website": "https://speakeasykavabar.com",
+    "instagram": "@speakeasykava",
+    "city": "Largo",
+    "hours": {
+      "0": [
+        "07:00",
+        "03:00"
+      ],
+      "1": [
+        "07:00",
+        "03:00"
+      ],
+      "2": [
+        "07:00",
+        "03:00"
+      ],
+      "3": [
+        "07:00",
+        "03:00"
+      ],
+      "4": [
+        "07:00",
+        "03:00"
+      ],
+      "5": [
+        "07:00",
+        "03:00"
+      ],
+      "6": [
+        "07:00",
+        "03:00"
+      ]
+    }
+  },
+  {
+    "name": "Grassroots Kava House",
+    "address": "957 Central Ave, St. Petersburg, FL 33705",
+    "phone": "",
+    "website": "https://grassrootskavahouse.com",
+    "instagram": "@grassrootskava",
+    "city": "St. Pete",
+    "hours": {
+      "0": [
+        "08:00",
+        "00:00"
+      ],
+      "1": [
+        "07:00",
+        "00:00"
+      ],
+      "2": [
+        "07:00",
+        "00:00"
+      ],
+      "3": [
+        "07:00",
+        "00:00"
+      ],
+      "4": [
+        "07:00",
+        "00:00"
+      ],
+      "5": [
+        "07:00",
+        "00:00"
+      ],
+      "6": [
+        "08:00",
+        "00:00"
+      ]
+    }
+  },
+  {
+    "name": "Bula Kafe",
+    "address": "2500 5th Ave N, St. Petersburg, FL 33713",
+    "phone": "727-498-8913",
+    "website": "https://bula-kafe.com",
+    "instagram": "@bulakafe",
+    "city": "St. Pete",
+    "hours": {
+      "0": [
+        "07:00",
+        "02:00"
+      ],
+      "1": [
+        "07:00",
+        "02:00"
+      ],
+      "2": [
+        "07:00",
+        "02:00"
+      ],
+      "3": [
+        "07:00",
+        "02:00"
+      ],
+      "4": [
+        "07:00",
+        "02:00"
+      ],
+      "5": [
+        "07:00",
+        "02:00"
+      ],
+      "6": [
+        "07:00",
+        "02:00"
+      ]
+    }
+  },
+  {
+    "name": "Bula Kavananda",
+    "address": "6312 N Florida Ave, Tampa, FL 33604",
+    "phone": "",
+    "website": "",
+    "instagram": "",
+    "city": "Tampa",
+    "hours": null
+  },
+  {
+    "name": "Spook Easy Kava Bar",
+    "address": "1708 E 7th Ave, Tampa, FL 33605",
+    "phone": "",
+    "website": "",
+    "instagram": "",
+    "city": "Tampa",
+    "hours": null
+  },
+  {
+    "name": "Driftwood Kava Bar",
+    "address": "2737 Central Ave, St. Petersburg, FL 33712",
+    "phone": "",
+    "website": "",
+    "instagram": "",
+    "city": "St. Pete",
+    "hours": null
+  }
+]
