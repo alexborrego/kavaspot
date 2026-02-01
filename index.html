@@ -15,7 +15,6 @@
 <div class="logo-icon">🌿</div>
 <h1>KavaSpot</h1>
 </div>
-<span class="badge">St. Pete + Clearwater</span>
 </div>
 </header>
 
@@ -23,7 +22,7 @@
 <div class="hero-top">
 <div>
 <h2>This Week</h2>
-<p class="subtitle">7 events • 5 bars</p>
+<p class="subtitle" id="subtitle">7 events • 5 bars</p>
 </div>
 <div class="date">
 <p class="date-day">Jan 31</p>
@@ -36,7 +35,7 @@
 </div>
 </section>
 
-<section class="categories">
+<section class="categories" id="categories">
 <button class="cat-btn active" data-cat="All" data-tab="events">All</button>
 <button class="cat-btn" data-cat="Social" data-tab="events">Social</button>
 <button class="cat-btn" data-cat="Music" data-tab="events">Music</button>
@@ -210,6 +209,8 @@ document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
 document.getElementById('eventsTab').style.display = tab === 'events' ? 'block' : 'none';
 document.getElementById('barsTab').style.display = tab === 'bars' ? 'block' : 'none';
 document.getElementById('dealsTab').style.display = tab === 'deals' ? 'block' : 'none';
+document.getElementById('categories').style.display = tab === 'events' ? 'flex' : 'none';
+document.getElementById('subtitle').textContent = tab === 'events' ? '7 events • 5 bars' : (tab === 'bars' ? '5 bars' : '6 deals');
 }
 
 function showEvent(idx) {
