@@ -3,7 +3,6 @@ import { Header } from './components/common/Header'
 import { HeroSection } from './components/home/HeroSection'
 import { SearchBar } from './components/common/SearchBar'
 import { FilterChips } from './components/common/FilterChips'
-import { BottomNav } from './components/common/BottomNav'
 import { Loading } from './components/common/Loading'
 import { Newsletter } from './components/home/Newsletter'
 import { AboutModal } from './components/modals/AboutModal'
@@ -108,7 +107,6 @@ const AppContent = () => {
         </div>
       </footer>
 
-      <BottomNav />
       <AboutModal />
       <ForBarsModal />
     </div>
