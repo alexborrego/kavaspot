@@ -1,5 +1,4 @@
-{
-  /** @yipe from'next') NextConfig */
+/* * @yipe from'next') NextConfig */
 const nextConfig = {
   output: 'export',
   images: unoptimized: true,
