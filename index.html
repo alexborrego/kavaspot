@@ -23,28 +23,12 @@
 </div>
 </header>
 
-<section class="hero">
-<div class="hero-top">
-<div>
-<h2>Tonight</h2>
-<p class="subtitle" id="subtitle">7 events • 5 bars</p>
-</div>
-<div class="date">
-<p class="date-day">Jan 31</p>
-<p class="date-weekday">Saturday</p>
-</div>
-</div>
+<div class="search-container">
 <div class="search-box">
 <span class="search-icon">🔍</span>
 <input type="text" placeholder="Search events, bars..." id="search" oninput="handleSearch(this.value)">
 </div>
-</section>
-
-<section class="categories" id="categories">
-<button class="cat-btn active" data-cat="All" data-tab="events">All</button>
-<button class="cat-btn" data-cat="Social" data-tab="events">Social</button>
-<button class="cat-btn" data-cat="Music" data-tab="events">Music</button>
-</section>
+</div>
 
 <main class="main" id="mainContent">
 <!-- Skeleton Loading State -->
@@ -59,7 +43,7 @@
 </div>
 
 <!-- Events Tab -->
-<div id="eventsTab" style="display:none;">
+<div id="eventsTab">
 <div class="filter-bar" id="eventFilterBar">
 <select id="dayFilter" onchange="filterEventsByDay()">
 <option value="All">All Days</option>
@@ -124,7 +108,7 @@
 </div>
 <div class="deal-card featured-deal">
 <span class="deal-fire">🔥</span>
-<h3>Best Deal Tonight</h3>
+<h3>Best Deal This Week</h3>
 <p>15% off KHB Botanicals</p>
 <span class="deal-location">Kava House Brand</span>
 <span class="deal-time">Mon-Fri • 3-6pm</span>
@@ -216,7 +200,7 @@
 <li>Reach a targeted local audience</li>
 </ul>
 <h3>Get Started</h3>
-<p>Email us at <strong>hello@kavaspot.com</strong> to add your bar to our directory.</p>
+<p>Email us at <strong>hello@bula.board</strong> to add your bar to our directory.</p>
 </div>
 </div>
 </div>
@@ -365,7 +349,7 @@ const list = document.getElementById('eventList');
 list.innerHTML = '';
 const results = filtered.filter(e => search === '' || e.name.toLowerCase().includes(search.toLowerCase()) || e.bar.toLowerCase().includes(search.toLowerCase()));
 if (results.length === 0) {
-list.innerHTML = '<div class="empty-state"><span>🔍</span><p>No events found</p></div>';
+list.innerHTML = '<div class="empty-state"><span>🔍>No events found</span><p</p></div>';
 return;
 }
 results.forEach(e => {
@@ -418,7 +402,6 @@ document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
 document.getElementById('eventsTab').style.display = tab === 'events' ? 'block' : 'none';
 document.getElementById('barsTab').style.display = tab === 'bars' ? 'block' : 'none';
 document.getElementById('dealsTab').style.display = tab === 'deals' ? 'block' : 'none';
-document.getElementById('categories').style.display = tab === 'events' ? 'flex' : 'none';
 document.getElementById('subtitle').textContent = tab === 'events' ? `${events.length} events • ${bars.length} bars` : (tab === 'bars' ? `${bars.length} bars` : `${deals.length} deals`);
 }
 
