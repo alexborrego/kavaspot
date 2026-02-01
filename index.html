@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="styles.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-47FbVs0MkswEo6A0SbcnY.js"></script>
+<script>window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)}</script>
 </head>
 <body>
 <div class="app">
@@ -458,18 +461,27 @@ function filterEventsByCategory() {
 const category = document.getElementById('categoryFilter').value;
 const search = document.getElementById('search').value;
 renderEvents(category, search);
+if (typeof plausible !== 'undefined' && category !== 'All') {
+plausible('Filter', { type: 'category', value: category });
+}
 }
 
 function filterBarsByLocation() {
 const location = document.getElementById('locationFilter').value;
 const search = document.getElementById('search').value;
 renderBars(location, search);
+if (typeof plausible !== 'undefined' && location !== 'All') {
+plausible('Filter', { type: 'location', value: location });
+}
 }
 
 function filterDealsByDay() {
 const day = document.getElementById('dealDayFilter').value;
 const search = document.getElementById('search').value;
 renderDeals(day, search);
+if (typeof plausible !== 'undefined' && day !== 'All') {
+plausible('Filter', { type: 'day', value: day });
+}
 }
 
 function handleSearch(query) {
@@ -484,6 +496,14 @@ renderBars(location, query);
 const day = document.getElementById('dealDayFilter').value;
 renderDeals(day, query);
 }
+
+// Track search (only for non-empty queries)
+if (query.length >= 2 && typeof plausible !== 'undefined') {
+plausible('Search', { 
+query: query.substring(0, 50),
+tab: activeTab
+});
+}
 }
 
 function switchTab(tab) {
@@ -492,6 +512,11 @@ document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
 document.getElementById('eventsTab').style.display = tab === 'events' ? 'block' : 'none';
 document.getElementById('barsTab').style.display = tab === 'bars' ? 'block' : 'none';
 document.getElementById('dealsTab').style.display = tab === 'deals' ? 'block' : 'none';
+
+// Track tab change
+if (typeof plausible !== 'undefined') {
+plausible('Tab Change', { tab: tab });
+}
 
 const content = document.getElementById('subtitle');
 if (content) {
@@ -507,6 +532,15 @@ event = document.getElementById('featuredEvent').showData;
 }
 const bar = getBarById(event.bar_id);
 const cat = categoriesData.find(c => c.id === event.category_id);
+
+// Track event click
+if (typeof plausible !== 'undefined') {
+plausible('Event Click', { 
+event: event.name,
+bar: bar?.name || 'Unknown',
+category: cat?.name || 'Unknown'
+});
+}
 
 document.getElementById('eventModalHeader').className = 'modal-header';
 document.getElementById('eventModalHeader').innerHTML = `<span class="modal-icon">${cat?.icon || '📅'}</span><span class="modal-type">${cat?.name || 'Event'}</span>`;
@@ -533,6 +567,14 @@ const hours = getBarHours(bar.id);
 const hoursText = hours.length > 0 
 ? hours.map(h => `${daysOfWeek[h.day_of_week].slice(0, 3)}: ${h.is_closed ? 'Closed' : `${h.open_time?.slice(0, 5)}-${h.close_time?.slice(0, 5)}`}`).join(' | ')
 : 'Hours vary';
+
+// Track bar click
+if (typeof plausible !== 'undefined') {
+plausible('Bar Click', { 
+bar: bar.name,
+city: bar.city || 'Unknown'
+});
+}
 
 document.getElementById('barModalHeader').className = 'modal-header bar-modal-header';
 document.getElementById('barModalHeader').innerHTML = `<span class="modal-icon">🏠</span>`;
