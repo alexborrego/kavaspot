@@ -159,12 +159,6 @@ export const UnifiedFeed = () => {
     return null
   }
 
-  const hasAnyContent = Object.values(sections).some(section => section.length > 0)
-
-  if (!hasAnyContent) {
-    return <EmptyState icon="🔍" message="No events, bars, or deals found" />
-  }
-
   // Calculate total items and create limited sections
   const totalItems = sections.happeningNow.length + sections.startingSoon.length +
     sections.laterToday.length + sections.tomorrow.length + sections.thisWeek.length
@@ -204,6 +198,12 @@ export const UnifiedFeed = () => {
 
     return limited
   }, [sections, itemsToShow])
+
+  const hasAnyContent = Object.values(sections).some(section => section.length > 0)
+
+  if (!hasAnyContent) {
+    return <EmptyState icon="🔍" message="No events, bars, or deals found" />
+  }
 
   return (
     <div className="unified-feed">

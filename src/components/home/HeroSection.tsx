@@ -3,7 +3,7 @@ export const HeroSection = () => {
     <div className="hero-section">
       <div className="hero-content">
         <h2 className="hero-title">
-          Your <em>Kava Bar</em><br />Companion
+          <em>Kava Bar</em><br />Companion
         </h2>
         <p className="hero-subtitle">
           Weekly events, exclusive deals, and hidden gems across the best kava bars in town.
