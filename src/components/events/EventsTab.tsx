@@ -20,7 +20,8 @@ export const EventsTab = () => {
   // Filter events
   const filteredEvents = useMemo(() => {
     return events.filter(event => {
-      const matchesCategory = categoryFilter === 'All' || event.event_category_id === categoryFilter
+      const matchesCategory = categoryFilter.includes('All') ||
+        (event.event_category_id && categoryFilter.includes(event.event_category_id))
       const bar = bars.find(b => b.id === event.bar_id)
       const matchesSearch = searchQuery === '' ||
         event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -59,8 +60,8 @@ export const EventsTab = () => {
     <div id="eventsTab">
       <div className="filter-bar">
         <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
+          value={categoryFilter[0] || 'All'}
+          onChange={(e) => setCategoryFilter([e.target.value])}
         >
           <option value="All">All Categories</option>
           {categories.map(cat => (
@@ -71,7 +72,7 @@ export const EventsTab = () => {
         </select>
       </div>
 
-      {featuredEvent && categoryFilter === 'All' && !searchQuery && (
+      {featuredEvent && categoryFilter.includes('All') && !searchQuery && (
         <div
           className="featured-card"
           onClick={() => handleEventClick(featuredEvent)}

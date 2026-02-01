@@ -20,8 +20,8 @@ interface AppContextType {
   setActiveTab: (tab: TabType) => void
   searchQuery: string
   setSearchQuery: (query: string) => void
-  categoryFilter: string
-  setCategoryFilter: (filter: string) => void
+  categoryFilter: string[]
+  setCategoryFilter: (filter: string[]) => void
   locationFilter: string
   setLocationFilter: (filter: string) => void
   dayFilter: string
@@ -49,7 +49,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [viewMode, setViewModeState] = useState<'unified' | 'tabs'>('unified')
   const [activeTab, setActiveTabState] = useState<TabType>('events')
   const [searchQuery, setSearchQueryState] = useState('')
-  const [categoryFilter, setCategoryFilterState] = useState('All')
+  const [categoryFilter, setCategoryFilterState] = useState<string[]>(['All'])
   const [locationFilter, setLocationFilterState] = useState('All')
   const [dayFilter, setDayFilterState] = useState('All')
 
@@ -78,9 +78,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }
 
-  const setCategoryFilter = (filter: string) => {
+  const setCategoryFilter = (filter: string[]) => {
     setCategoryFilterState(filter)
-    trackEvent('Filter: Category', { category: filter })
+    trackEvent('Filter: Category', { categories: filter.join(', ') })
   }
 
   const setLocationFilter = (filter: string) => {

@@ -25,15 +25,20 @@ export const UnifiedFeed = () => {
   const filteredItems = useMemo(() => {
     const items: FeedItem[] = []
 
-    // Add events (if not filtering for deals only)
-    if (categoryFilter !== 'Deals') {
+    // Check if we should show events (not filtering for deals only)
+    const showEvents = !categoryFilter.includes('Deals') || categoryFilter.includes('All')
+    const showDeals = categoryFilter.includes('All') || categoryFilter.includes('Deals')
+
+    // Add events
+    if (showEvents || categoryFilter.some(cat => cat !== 'Deals' && cat !== 'All')) {
       events.forEach(event => {
         const bar = bars.find(b => b.id === event.bar_id)
         const matchesSearch = searchQuery === '' ||
           event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
 
-        const matchesCategory = categoryFilter === 'All' || event.event_category_id === categoryFilter
+        const matchesCategory = categoryFilter.includes('All') ||
+          (event.event_category_id && categoryFilter.includes(event.event_category_id))
         const matchesLocation = locationFilter === 'All' || bar?.city === locationFilter
 
         if (matchesSearch && matchesCategory && matchesLocation) {
@@ -47,8 +52,8 @@ export const UnifiedFeed = () => {
       })
     }
 
-    // Add deals (if showing all or deals specifically)
-    if (categoryFilter === 'All' || categoryFilter === 'Deals') {
+    // Add deals
+    if (showDeals) {
       deals.forEach(deal => {
         const bar = bars.find(b => b.id === deal.bar_id)
         const matchesSearch = searchQuery === '' ||
