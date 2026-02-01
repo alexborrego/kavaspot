@@ -4,7 +4,7 @@ import { EventCard } from './EventCard'
 import { BarCard } from './BarCard'
 import { DealCard } from './DealCard'
 import { EmptyState } from '../common/EmptyState'
-import { isHappeningNow, isStartingSoon, isToday, isTomorrow, getEventDateTime } from '../../utils/dateHelpers'
+import { isHappeningNow, isStartingSoon, isToday, isTomorrow, getEventDateTime, getDealDateTime } from '../../utils/dateHelpers'
 
 type FeedItem = {
   type: 'event' | 'bar' | 'deal'
@@ -53,10 +53,11 @@ export const UnifiedFeed = () => {
       const matchesLocation = locationFilter === 'All' || bar?.city === locationFilter
 
       if (matchesSearch && matchesLocation) {
+        const dealTime = getDealDateTime(deal)
         items.push({
           type: 'deal',
           data: { ...deal, bar },
-          sortTime: Date.now() // Deals show up with current time
+          sortTime: dealTime?.getTime() || Date.now()
         })
       }
     })
@@ -71,13 +72,10 @@ export const UnifiedFeed = () => {
     const laterToday: FeedItem[] = []
     const tomorrow: FeedItem[] = []
     const thisWeek: FeedItem[] = []
-    const dealsSection: FeedItem[] = []
     const barsSection: FeedItem[] = []
 
     filteredItems.forEach(item => {
-      if (item.type === 'deal') {
-        dealsSection.push(item)
-      } else if (item.type === 'bar') {
+      if (item.type === 'bar') {
         barsSection.push(item)
       } else if (item.type === 'event') {
         const event = item.data
@@ -97,10 +95,20 @@ export const UnifiedFeed = () => {
             }
           }
         }
+      } else if (item.type === 'deal') {
+        // Categorize deals into time-based sections
+        const dealTime = new Date(item.sortTime)
+        if (isToday(dealTime)) {
+          laterToday.push(item)
+        } else if (isTomorrow(dealTime)) {
+          tomorrow.push(item)
+        } else {
+          thisWeek.push(item)
+        }
       }
     })
 
-    return { happeningNow, startingSoon, laterToday, tomorrow, thisWeek, dealsSection, barsSection }
+    return { happeningNow, startingSoon, laterToday, tomorrow, thisWeek, barsSection }
   }, [filteredItems])
 
   const renderItem = (item: FeedItem) => {
@@ -203,18 +211,6 @@ export const UnifiedFeed = () => {
           </h2>
           <div className="feed-section-content">
             {sections.thisWeek.map(renderItem)}
-          </div>
-        </div>
-      )}
-
-      {sections.dealsSection.length > 0 && (
-        <div className="feed-section">
-          <h2 className="feed-section-title">
-            <span className="title-icon">💰</span>
-            Current Deals
-          </h2>
-          <div className="feed-section-content">
-            {sections.dealsSection.map(renderItem)}
           </div>
         </div>
       )}

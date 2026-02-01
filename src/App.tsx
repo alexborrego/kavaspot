@@ -71,17 +71,21 @@ const AppContent = () => {
       <SearchBar />
 
       {/* Filter Section */}
-      <div className="filters-section">
-        <FilterChips
-          chips={categoryChips}
-          activeValue={categoryFilter}
-          onChange={setCategoryFilter}
-        />
-        <FilterChips
-          chips={locationChips}
-          activeValue={locationFilter}
-          onChange={setLocationFilter}
-        />
+      <div className="filters-wrapper">
+        <div className="filter-row">
+          <FilterChips
+            chips={categoryChips}
+            activeValue={categoryFilter}
+            onChange={setCategoryFilter}
+          />
+        </div>
+        <div className="filter-row">
+          <FilterChips
+            chips={locationChips}
+            activeValue={locationFilter}
+            onChange={setLocationFilter}
+          />
+        </div>
       </div>
 
       <main className="main">

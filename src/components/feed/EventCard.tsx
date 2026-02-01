@@ -1,5 +1,5 @@
 import type { Event, Bar } from '../../types'
-import { formatTime, getTimeUntil, isHappeningNow } from '../../utils/dateHelpers'
+import { formatTime, getTimeUntil, isHappeningNow, downloadCalendarEvent } from '../../utils/dateHelpers'
 
 interface EventCardProps {
   event: Event
@@ -49,7 +49,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, bar, onClick }) => 
       <div className="feed-card-actions">
         <button className="btn-action btn-sm" onClick={(e) => {
           e.stopPropagation()
-          // Add to calendar functionality
+          downloadCalendarEvent(event, bar)
         }}>
           📅 Add to Calendar
         </button>
