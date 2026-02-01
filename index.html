@@ -5,7 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KavaSpot - Your Weekly Guide to Kava in St. Pete</title>
 <meta name="description" content="Events, deals, and vibes — all in one place.">
+<link rel="canonical" href="https://alexborrego.github.io/kavaspot/">
 <link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="KavaSpot - Your Weekly Guide to Kava in St. Pete">
+<meta property="og:description" content="Events, deals, and vibes — all in one place.">
+<meta property="og:type" content="website">
 </head>
 <body>
 <div class="app">
@@ -43,8 +47,19 @@
 </section>
 
 <main class="main" id="mainContent">
+<!-- Skeleton Loading State -->
+<div id="skeletonLoader" class="skeleton-container">
+<div class="skeleton-card featured"></div>
+<div class="skeleton-list">
+<div class="skeleton-item"></div>
+<div class="skeleton-item"></div>
+<div class="skeleton-item"></div>
+<div class="skeleton-item"></div>
+</div>
+</div>
+
 <!-- Events Tab -->
-<div id="eventsTab">
+<div id="eventsTab" style="display:none;">
 <div class="filter-bar" id="eventFilterBar">
 <select id="dayFilter" onchange="filterEventsByDay()">
 <option value="All">All Days</option>
@@ -126,10 +141,10 @@
 <p>Curated events, every Saturday</p>
 </div>
 </div>
-<div class="newsletter-form">
-<input type="email" placeholder="your@email.com">
-<button>Join</button>
-</div>
+<form class="newsletter-form" onsubmit="handleNewsletter(event)">
+<input type="email" placeholder="your@email.com" required>
+<button type="submit">Join</button>
+</form>
 </section>
 
 <footer class="footer">
@@ -237,9 +252,36 @@ const deals = [
 {bar:"Bula Kafe",offer:"Free Kava Flight",code:"NEW10",expires:"New Customers",location:"2500 5th Ave N",desc:"Ask your server",days:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]}
 ];
 
-let allEvents = [...events];
-let allBars = [...bars];
-let allDeals = [...deals];
+// Simulated loading delay for skeleton effect
+const loadingDelay = 300;
+
+function initApp() {
+setTimeout(() => {
+document.getElementById('skeletonLoader').style.display = 'none';
+document.getElementById('eventsTab').style.display = 'block';
+renderEvents();
+renderBars();
+renderDeals();
+checkForShareableEvent();
+}, loadingDelay);
+}
+
+function checkForShareableEvent() {
+const params = new URLSearchParams(window.location.search);
+const eventId = params.get('event');
+if (eventId) {
+const eventIndex = events.findIndex(e => e.id === parseInt(eventId));
+if (eventIndex >= 0) {
+switchTab('events');
+setTimeout(() => showEvent(eventIndex), 100);
+}
+}
+}
+
+function getShareableEventUrl(eventId) {
+const baseUrl = window.location.href.split('?')[0];
+return `${baseUrl}?event=${eventId}`;
+}
 
 function renderBars(filter = 'All', search = '') {
 const list = document.getElementById('barList');
@@ -313,21 +355,20 @@ const search = document.getElementById('search').value;
 if (day === 'All') {
 renderEvents('All', search);
 } else {
-renderEvents('All', search);
-allEvents = events.filter(e => e.day === day);
-renderFilteredEvents(search);
+const filtered = events.filter(e => e.day === day);
+renderFilteredEvents(filtered, search);
 }
 }
 
-function renderFilteredEvents(search = '') {
+function renderFilteredEvents(filtered, search = '') {
 const list = document.getElementById('eventList');
 list.innerHTML = '';
-const filtered = allEvents.filter(e => search === '' || e.name.toLowerCase().includes(search.toLowerCase()) || e.bar.toLowerCase().includes(search.toLowerCase()));
-if (filtered.length === 0) {
+const results = filtered.filter(e => search === '' || e.name.toLowerCase().includes(search.toLowerCase()) || e.bar.toLowerCase().includes(search.toLowerCase()));
+if (results.length === 0) {
 list.innerHTML = '<div class="empty-state"><span>🔍</span><p>No events found</p></div>';
 return;
 }
-filtered.forEach(e => {
+results.forEach(e => {
 const div = document.createElement('div');
 div.className = 'event-card';
 div.onclick = () => showEvent(events.indexOf(e));
@@ -359,7 +400,8 @@ const day = document.getElementById('dayFilter').value;
 if (day === 'All') {
 renderEvents('All', query);
 } else {
-renderFilteredEvents(query);
+const filtered = events.filter(e => e.day === day);
+renderFilteredEvents(filtered, query);
 }
 } else if (activeTab === 'bars') {
 const location = document.getElementById('locationFilter').value;
@@ -377,11 +419,12 @@ document.getElementById('eventsTab').style.display = tab === 'events' ? 'block' 
 document.getElementById('barsTab').style.display = tab === 'bars' ? 'block' : 'none';
 document.getElementById('dealsTab').style.display = tab === 'deals' ? 'block' : 'none';
 document.getElementById('categories').style.display = tab === 'events' ? 'flex' : 'none';
-document.getElementById('subtitle').textContent = tab === 'events' ? '7 events • 5 bars' : (tab === 'bars' ? '5 bars' : '6 deals');
+document.getElementById('subtitle').textContent = tab === 'events' ? `${events.length} events • ${bars.length} bars` : (tab === 'bars' ? `${bars.length} bars` : `${deals.length} deals`);
 }
 
 function showEvent(idx) {
 const e = events[idx];
+const shareUrl = getShareableEventUrl(e.id);
 document.getElementById('eventModalHeader').className = 'modal-header';
 document.getElementById('eventModalHeader').innerHTML = `<span class="modal-icon">${e.image}</span><span class="modal-type">${e.type}</span>`;
 document.getElementById('eventModalBody').innerHTML = `
@@ -392,7 +435,10 @@ document.getElementById('eventModalBody').innerHTML = `
 </div>
 <div class="modal-actions">
 <button class="calendar-btn" onclick="downloadICS('${e.name}','${e.bar}','${e.day} ${e.date}','${e.time}','${e.location}')">📅 Add to Calendar</button>
-<button class="share-btn" onclick="shareEvent('${e.name}','${e.bar}','${e.day} ${e.time}')">📤 Share</button>
+<button class="share-btn" onclick="shareEvent('${e.name}','${e.bar}','${e.day} ${e.time}','${shareUrl}')">📤 Share</button>
+</div>
+<div class="share-link">
+<input type="text" value="${shareUrl}" readonly onclick="this.select()"> <button onclick="copyShareLink('${shareUrl}')">Copy</button>
 </div>
 `;
 document.getElementById('eventModal').style.display = 'flex';
@@ -412,8 +458,8 @@ document.getElementById('barModalBody').innerHTML = `
 ${b.phone ? `<div><p>📞</p><p><a href="tel:${b.phone}">${b.phone}</a></p></div>` : ''}
 </div>
 <div class="modal-actions">
-<a href="${b.map}" target="_blank" class="map-btn">🗺️ Open in Maps</a>
-${b.menu ? `<a href="${b.menu}" target="_blank" class="menu-btn">📋 View Menu</a>` : ''}
+<a href="${b.map}" target="_blank" rel="noopener" class="map-btn">🗺️ Open in Maps</a>
+${b.menu ? `<a href="${b.menu}" target="_blank" rel="noopener" class="menu-btn">📋 View Menu</a>` : ''}
 </div>
 `;
 document.getElementById('barModal').style.display = 'flex';
@@ -441,14 +487,26 @@ a.click();
 URL.revokeObjectURL(url);
 }
 
-function shareEvent(name, bar, dayTime) {
-const text = `${name} at ${bar} - ${dayTime}\n\nShared from KavaSpot`;
+function shareEvent(name, bar, dayTime, shareUrl) {
+const text = `${name} at ${bar} - ${dayTime}\n\n${shareUrl}`;
 if (navigator.share) {
-navigator.share({ title: 'KavaSpot Event', text: text, url: window.location.href });
+navigator.share({ title: 'KavaSpot Event', text: text, url: shareUrl });
 } else {
 navigator.clipboard.writeText(text);
 alert('Copied to clipboard!');
 }
+}
+
+function copyShareLink(url) {
+navigator.clipboard.writeText(url);
+alert('Link copied to clipboard!');
+}
+
+function handleNewsletter(e) {
+e.preventDefault();
+const email = e.target.querySelector('input').value;
+alert('Thanks for subscribing! You\'ll receive our weekly digest at ' + email);
+e.target.reset();
 }
 
 function showAbout() { document.getElementById('aboutModal').style.display = 'flex'; }
@@ -468,9 +526,8 @@ renderEvents(btn.dataset.cat, document.getElementById('search').value);
 };
 });
 
-renderEvents();
-renderBars();
-renderDeals();
+// Initialize app
+initApp();
 </script>
 </body>
 </html>
