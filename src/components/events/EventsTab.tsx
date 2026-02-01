@@ -53,8 +53,8 @@ export const EventsTab = () => {
   }
 
   // Featured event (first one)
-  const featuredEvent = filteredEvents[0]
-  const regularEvents = filteredEvents.slice(1)
+  const featuredEvent = filteredEvents.length > 0 ? filteredEvents[0] : null
+  const regularEvents = filteredEvents.length > 0 ? filteredEvents.slice(1) : []
 
   return (
     <div id="eventsTab">

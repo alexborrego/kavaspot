@@ -21,8 +21,8 @@ export const DealsTab = () => {
     })
   }, [deals, dayFilter, searchQuery, bars])
 
-  const featuredDeal = filteredDeals[0]
-  const regularDeals = filteredDeals.slice(1)
+  const featuredDeal = filteredDeals.length > 0 ? filteredDeals[0] : null
+  const regularDeals = filteredDeals.length > 0 ? filteredDeals.slice(1) : []
 
   return (
     <div id="dealsTab">

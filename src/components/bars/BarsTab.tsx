@@ -47,8 +47,8 @@ export const BarsTab = () => {
     setSelectedBar(bar)
   }
 
-  const featuredBar = filteredBars[0]
-  const regularBars = filteredBars.slice(1)
+  const featuredBar = filteredBars.length > 0 ? filteredBars[0] : null
+  const regularBars = filteredBars.length > 0 ? filteredBars.slice(1) : []
 
   return (
     <div id="barsTab">
