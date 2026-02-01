@@ -24,8 +24,6 @@ const AppContent = () => {
     setShowForBarsModal,
     categories,
     bars,
-    typeFilter,
-    setTypeFilter,
     categoryFilter,
     setCategoryFilter,
     locationFilter,
@@ -58,14 +56,9 @@ const AppContent = () => {
   }
 
   // Create filter chips
-  const typeChips = [
-    { label: 'All', value: 'All' },
-    { label: 'Events', value: 'Events', icon: '📅' },
-    { label: 'Deals', value: 'Deals', icon: '💰' }
-  ]
-
   const categoryChips = [
     { label: 'All', value: 'All' },
+    { label: 'Deals', value: 'Deals', icon: '💰' },
     ...categories.map(cat => ({ label: cat.name, value: cat.id, icon: cat.icon || undefined }))
   ]
 
@@ -82,13 +75,6 @@ const AppContent = () => {
 
       {/* Filter Section */}
       <div className="filters-wrapper">
-        <div className="filter-row">
-          <FilterChips
-            chips={typeChips}
-            activeValue={typeFilter}
-            onChange={setTypeFilter}
-          />
-        </div>
         <div className="filter-row">
           <FilterChips
             chips={categoryChips}

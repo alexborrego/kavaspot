@@ -16,7 +16,7 @@ export const UnifiedFeed = () => {
   const {
     events, bars, deals, barHours, searchQuery,
     setSelectedEvent, setSelectedDeal, setSelectedBar,
-    typeFilter, categoryFilter, locationFilter
+    categoryFilter, locationFilter
   } = useApp()
 
   const [itemsToShow, setItemsToShow] = useState(10)
@@ -25,8 +25,8 @@ export const UnifiedFeed = () => {
   const filteredItems = useMemo(() => {
     const items: FeedItem[] = []
 
-    // Add events (if typeFilter allows)
-    if (typeFilter === 'All' || typeFilter === 'Events') {
+    // Add events (if not filtering for deals only)
+    if (categoryFilter !== 'Deals') {
       events.forEach(event => {
         const bar = bars.find(b => b.id === event.bar_id)
         const matchesSearch = searchQuery === '' ||
@@ -47,8 +47,8 @@ export const UnifiedFeed = () => {
       })
     }
 
-    // Add deals (if typeFilter allows)
-    if (typeFilter === 'All' || typeFilter === 'Deals') {
+    // Add deals (if showing all or deals specifically)
+    if (categoryFilter === 'All' || categoryFilter === 'Deals') {
       deals.forEach(deal => {
         const bar = bars.find(b => b.id === deal.bar_id)
         const matchesSearch = searchQuery === '' ||
@@ -69,7 +69,7 @@ export const UnifiedFeed = () => {
     }
 
     return items.sort((a, b) => a.sortTime - b.sortTime)
-  }, [events, bars, deals, searchQuery, typeFilter, categoryFilter, locationFilter])
+  }, [events, bars, deals, searchQuery, categoryFilter, locationFilter])
 
   // Group items by time sections
   const sections = useMemo(() => {

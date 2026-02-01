@@ -27,58 +27,39 @@ export const DealModal = () => {
   return (
     <Modal isOpen={true} onClose={() => setSelectedDeal(null)}>
       <div className="modal-header">
-        <span className="modal-icon">🔥</span>
-        <h3>{selectedDeal.name}</h3>
-        <span className="modal-category badge-deal">Deal</span>
+        <span className="modal-icon">💰</span>
+        <span className="modal-type">Deal</span>
       </div>
 
       <div className="modal-body">
+        <h3>{selectedDeal.name}</h3>
+        {bar && <p className="modal-bar">{bar.name}</p>}
+
         {selectedDeal.description && (
-          <div className="modal-section">
-            <p>{selectedDeal.description}</p>
-          </div>
+          <p className="modal-desc">{selectedDeal.description}</p>
         )}
 
-        <div className="modal-section">
-          <div className="modal-info-grid">
-            <div className="modal-info-item">
-              <span className="info-label">📅 Valid Days</span>
-              <span className="info-value">{getValidDays()}</span>
-            </div>
-            <div className="modal-info-item">
-              <span className="info-label">⏰ Valid Times</span>
-              <span className="info-value">{getValidTimes()}</span>
-            </div>
-            {bar && (
-              <>
-                <div className="modal-info-item">
-                  <span className="info-label">📍 Location</span>
-                  <span className="info-value">{bar.name}</span>
-                </div>
-                {bar.address_line1 && (
-                  <div className="modal-info-item">
-                    <span className="info-label">🏠 Address</span>
-                    <span className="info-value">
-                      {bar.address_line1}
-                      {bar.address_line2 && <>, {bar.address_line2}</>}
-                      <br />
-                      {bar.city}, {bar.state} {bar.zip_code}
-                    </span>
-                  </div>
-                )}
-              </>
-            )}
-            {selectedDeal.discount_type && selectedDeal.discount_value && (
-              <div className="modal-info-item">
-                <span className="info-label">💰 Discount</span>
-                <span className="info-value">
-                  {selectedDeal.discount_type === 'percentage'
-                    ? `${selectedDeal.discount_value}% off`
-                    : `$${selectedDeal.discount_value} off`}
-                </span>
-              </div>
-            )}
+        <div className="modal-details">
+          <div>
+            <span className="detail-label">📅 {getValidDays()}</span>
           </div>
+          <div>
+            <span className="detail-label">⏰ {getValidTimes()}</span>
+          </div>
+          {bar?.address_line1 && (
+            <div>
+              <span className="detail-label">📍 {bar.address_line1}, {bar.city}</span>
+            </div>
+          )}
+          {selectedDeal.discount_type && selectedDeal.discount_value && (
+            <div>
+              <span className="detail-label">
+                💸 {selectedDeal.discount_type === 'percentage'
+                  ? `${selectedDeal.discount_value}% off`
+                  : `$${selectedDeal.discount_value} off`}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </Modal>
