@@ -2,8 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-master]
-  workflow    branches: [_dispatch:
+    branches: [master]
+  workflow_dispatch:
 
 permissions:
   contents: read
