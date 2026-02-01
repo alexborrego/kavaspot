@@ -5,7 +5,11 @@ export const formatTime = (time: string | null): string => {
   if (!time) return 'TBD'
 
   // Parse HH:MM format
-  const [hours24, minutes] = time.split(':').map(Number)
+  const parts = time.split(':')
+  if (parts.length !== 2) return 'TBD'
+
+  const [hours24, minutes] = parts.map(Number)
+  if (isNaN(hours24) || isNaN(minutes)) return 'TBD'
 
   // Convert to 12-hour format
   const hours12 = hours24 % 12 || 12 // 0 becomes 12, 13-23 become 1-11
@@ -53,8 +57,13 @@ export const getEventDateTime = (event: { event_date?: string | null; start_time
   const baseDate = event.event_date ? new Date(event.event_date) : now
 
   if (event.start_time) {
-    const [hours, minutes] = event.start_time.split(':').map(Number)
-    baseDate.setHours(hours, minutes, 0, 0)
+    const parts = event.start_time.split(':')
+    if (parts.length === 2) {
+      const [hours, minutes] = parts.map(Number)
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        baseDate.setHours(hours, minutes, 0, 0)
+      }
+    }
   }
 
   return baseDate
@@ -68,8 +77,17 @@ export const isHappeningNow = (event: { event_date?: string | null; start_time?:
 
   let endDateTime = new Date(startDateTime)
   if (event.end_time) {
-    const [hours, minutes] = event.end_time.split(':').map(Number)
-    endDateTime.setHours(hours, minutes, 0, 0)
+    const parts = event.end_time.split(':')
+    if (parts.length === 2) {
+      const [hours, minutes] = parts.map(Number)
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        endDateTime.setHours(hours, minutes, 0, 0)
+      } else {
+        endDateTime.setHours(23, 59, 59, 999)
+      }
+    } else {
+      endDateTime.setHours(23, 59, 59, 999)
+    }
   } else {
     endDateTime.setHours(23, 59, 59, 999)
   }
@@ -172,8 +190,17 @@ export const generateICSFile = (event: {
 
   // Set start time
   if (event.start_time) {
-    const [hours, minutes] = event.start_time.split(':').map(Number)
-    startDate.setHours(hours, minutes, 0, 0)
+    const parts = event.start_time.split(':')
+    if (parts.length === 2) {
+      const [hours, minutes] = parts.map(Number)
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        startDate.setHours(hours, minutes, 0, 0)
+      } else {
+        startDate.setHours(0, 0, 0, 0)
+      }
+    } else {
+      startDate.setHours(0, 0, 0, 0)
+    }
   } else {
     startDate.setHours(0, 0, 0, 0)
   }
@@ -181,8 +208,17 @@ export const generateICSFile = (event: {
   // Set end time
   endDate = new Date(startDate)
   if (event.end_time) {
-    const [hours, minutes] = event.end_time.split(':').map(Number)
-    endDate.setHours(hours, minutes, 0, 0)
+    const parts = event.end_time.split(':')
+    if (parts.length === 2) {
+      const [hours, minutes] = parts.map(Number)
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        endDate.setHours(hours, minutes, 0, 0)
+      } else {
+        endDate.setHours(startDate.getHours() + 2, startDate.getMinutes(), 0, 0)
+      }
+    } else {
+      endDate.setHours(startDate.getHours() + 2, startDate.getMinutes(), 0, 0)
+    }
   } else {
     endDate.setHours(startDate.getHours() + 2, startDate.getMinutes(), 0, 0)
   }
@@ -287,8 +323,13 @@ export const getDealDateTime = (deal: { is_recurring: boolean; recurrence_days?:
   if (!deal.is_recurring && deal.valid_start_date) {
     const dealDate = new Date(deal.valid_start_date)
     if (deal.valid_start_time) {
-      const [hours, minutes] = deal.valid_start_time.split(':').map(Number)
-      dealDate.setHours(hours, minutes, 0, 0)
+      const parts = deal.valid_start_time.split(':')
+      if (parts.length === 2) {
+        const [hours, minutes] = parts.map(Number)
+        if (!isNaN(hours) && !isNaN(minutes)) {
+          dealDate.setHours(hours, minutes, 0, 0)
+        }
+      }
     }
     return dealDate
   }
@@ -302,12 +343,17 @@ export const getDealDateTime = (deal: { is_recurring: boolean; recurrence_days?:
     if (deal.recurrence_days.includes(currentDay)) {
       const dealTime = new Date(now)
       if (deal.valid_start_time) {
-        const [hours, minutes] = deal.valid_start_time.split(':').map(Number)
-        dealTime.setHours(hours, minutes, 0, 0)
+        const parts = deal.valid_start_time.split(':')
+        if (parts.length === 2) {
+          const [hours, minutes] = parts.map(Number)
+          if (!isNaN(hours) && !isNaN(minutes)) {
+            dealTime.setHours(hours, minutes, 0, 0)
 
-        // If the deal hasn't started yet today, use today
-        if (currentTime < deal.valid_start_time) {
-          return dealTime
+            // If the deal hasn't started yet today, use today
+            if (currentTime < deal.valid_start_time) {
+              return dealTime
+            }
+          }
         }
       } else {
         // If no start time, it's available all day today
@@ -323,8 +369,17 @@ export const getDealDateTime = (deal: { is_recurring: boolean; recurrence_days?:
         nextDate.setDate(now.getDate() + i)
 
         if (deal.valid_start_time) {
-          const [hours, minutes] = deal.valid_start_time.split(':').map(Number)
-          nextDate.setHours(hours, minutes, 0, 0)
+          const parts = deal.valid_start_time.split(':')
+          if (parts.length === 2) {
+            const [hours, minutes] = parts.map(Number)
+            if (!isNaN(hours) && !isNaN(minutes)) {
+              nextDate.setHours(hours, minutes, 0, 0)
+            } else {
+              nextDate.setHours(0, 0, 0, 0)
+            }
+          } else {
+            nextDate.setHours(0, 0, 0, 0)
+          }
         } else {
           nextDate.setHours(0, 0, 0, 0)
         }
