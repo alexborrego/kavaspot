@@ -13,7 +13,6 @@ const bars = [
 
 // Weekly recurring events - verified from bar websites
 const events = [
-  { id: 1, bar: 'Mad Hatters Kava Bar', name: 'Drag Queen Bingo', day: 'Wednesday', date: 'Feb 5', time: '9pm', type: 'Social', image: '👑', location: '4685 28th St N, St. Pete', description: 'Weekly Drag Queen Bingo with Alexis De La Mer. $10 for 10 games. All funds support local non-profits. $3 kava shells all night.' },
   { id: 2, bar: 'Mad Hatters Kava Bar', name: 'Karaoke', day: 'Friday', date: 'Feb 7', time: '9pm', type: 'Music', image: '🎤', location: '4685 28th St N, St. Pete', description: 'Weekly karaoke with words on the big projector screen. Hosted by Michelle. Some themed nights - check social media.' },
   { id: 3, bar: 'Grassroots Kava House', name: 'Trivia Night', day: 'Thursday', date: 'Feb 6', time: '7pm', type: 'Social', image: '🧠', location: '957 Central Ave, St. Pete', description: 'Weekly trivia with prizes. Hosted by Answers R In at St. Pete\'s original kava bar.' },
   { id: 4, bar: 'Speakeasy Kava', name: 'Trivia Night', day: 'Wednesday', date: 'Feb 5', time: '7pm', type: 'Social', image: '❓', location: '2101 Central Ave, St. Pete', description: 'Weekly trivia night. Test your knowledge and win prizes. $3 kava shells all night.' },
@@ -126,19 +125,19 @@ export default function Home() {
         {activeTab === 'events' && (
           <div className="space-y-4">
             {/* Featured */}
-            {selectedCategory === 'All' && !searchQuery && (
+            {selectedCategory === 'All' && !searchQuery && filteredEvents.length > 0 && (
               <div 
-                onClick={() => setShowModal(events[0])}
-                className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-5 text-white shadow-lg active:scale-[0.98] transition-transform cursor-pointer"
+                onClick={() => setShowModal(filteredEvents[0])}
+                className="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-2xl p-5 text-white shadow-lg active:scale-[0.98] transition-transform cursor-pointer"
               >
                 <div className="flex items-start justify-between mb-3">
                   <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">⭐ Featured</span>
-                  <span className="text-3xl">👑</span>
+                  <span className="text-3xl">{filteredEvents[0].image}</span>
                 </div>
-                <h3 className="text-xl font-bold mb-1">{events[0].name}</h3>
-                <p className="text-amber-100 text-sm mb-3">{events[0].bar}</p>
-                <div className="flex items-center gap-4 text-xs text-amber-100">
-                  <span>📅 {events[0].day} @ {events[0].time}</span>
+                <h3 className="text-xl font-bold mb-1">{filteredEvents[0].name}</h3>
+                <p className="text-emerald-100 text-sm mb-3">{filteredEvents[0].bar}</p>
+                <div className="flex items-center gap-4 text-xs text-emerald-100">
+                  <span>📅 {filteredEvents[0].day} @ {filteredEvents[0].time}</span>
                   <span>📍 St. Pete</span>
                 </div>
               </div>
@@ -159,9 +158,9 @@ export default function Home() {
                     className="bg-white rounded-xl border border-gray-100 shadow-sm active:scale-[0.98] transition-transform cursor-pointer overflow-hidden"
                   >
                     <div className="flex">
-                      <div className="w-24 bg-gradient-to-br from-amber-50 to-amber-100 flex flex-col items-center justify-center p-3">
+                      <div className="w-24 bg-gradient-to-br from-emerald-50 to-emerald-100 flex flex-col items-center justify-center p-3">
                         <span className="text-2xl mb-1">{event.image}</span>
-                        <span className="text-xs font-semibold text-amber-700">{event.day}</span>
+                        <span className="text-xs font-semibold text-emerald-700">{event.day}</span>
                       </div>
                       <div className="flex-1 p-4">
                         <div className="flex items-center gap-2 mb-1">
@@ -311,7 +310,7 @@ export default function Home() {
             className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-md overflow-hidden animate-slide-up"
             onClick={e => e.stopPropagation()}
           >
-            <div className="relative h-44 bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+            <div className="relative h-44 bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
               <span className="text-8xl">{showModal.image}</span>
               <button 
                 onClick={() => setShowModal(null)}
