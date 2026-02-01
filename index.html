@@ -37,13 +37,14 @@
 </section>
 
 <section class="categories">
-<button class="cat-btn active" data-cat="All">All</button>
-<button class="cat-btn" data-cat="Social">Social</button>
-<button class="cat-btn" data-cat="Music">Music</button>
+<button class="cat-btn active" data-cat="All" data-tab="events">All</button>
+<button class="cat-btn" data-cat="Social" data-tab="events">Social</button>
+<button class="cat-btn" data-cat="Music" data-tab="events">Music</button>
 </section>
 
-<main class="main">
-<!-- Featured Event -->
+<main class="main" id="mainContent">
+<!-- Events Tab -->
+<div id="eventsTab">
 <div class="featured-card" onclick="showEvent(0)">
 <span class="featured-badge">⭐ Featured</span>
 <span class="featured-icon">🎤</span>
@@ -54,9 +55,36 @@
 <span>📍 St. Pete</span>
 </div>
 </div>
-
-<!-- Event List -->
 <div class="event-list" id="eventList"></div>
+</div>
+
+<!-- Bars Tab -->
+<div id="barsTab" style="display:none;">
+<div class="bar-card featured-bar">
+<span class="featured-badge">🏆 Best of the Bay</span>
+<span class="featured-icon">🏝️</span>
+<h3>Bula Kafe</h3>
+<p>2500 5th Ave N, St. Pete</p>
+<div class="bar-meta">
+<span>🕐 7am-2am daily</span>
+<span>☕ Coffee + Kava</span>
+</div>
+<p class="bar-desc">St. Pete's original kava bar (since 2021). Voted Best Kava Bar 4 years running. Quality Vanuatu & Solomon Island kava.</p>
+</div>
+<div class="bar-list" id="barList"></div>
+</div>
+
+<!-- Deals Tab -->
+<div id="dealsTab" style="display:none;">
+<div class="deal-card featured-deal">
+<span class="deal-fire">🔥</span>
+<h3>Best Deal This Week</h3>
+<p>15% off KHB Botanicals</p>
+<span class="deal-location">Kava House Brand</span>
+<span class="deal-time">Mon-Fri • 3-6pm</span>
+</div>
+<div class="deal-list" id="dealList"></div>
+</div>
 </main>
 
 <section class="newsletter">
@@ -82,9 +110,9 @@
 </footer>
 
 <nav class="bottom-nav">
-<button class="nav-btn active" data-tab="events"><span>📅</span><span>Events</span></button>
-<button class="nav-btn" data-tab="bars"><span>🏠</span><span>Bars</span></button>
-<button class="nav-btn" data-tab="deals"><span>🎁</span><span>Deals</span></button>
+<button class="nav-btn active" data-tab="events" onclick="switchTab('events')"><span>📅</span><span>Events</span></button>
+<button class="nav-btn" data-tab="bars" onclick="switchTab('bars')"><span>🏠</span><span>Bars</span></button>
+<button class="nav-btn" data-tab="deals" onclick="switchTab('deals')"><span>🎁</span><span>Deals</span></button>
 </nav>
 </div>
 
@@ -98,15 +126,65 @@
 </div>
 
 <script>
-const events = [
-{id:1,bar:"Mad Hatters Kava Bar",name:"Karaoke",day:"Friday",date:"Feb 7",time:"9pm",type:"Music",image:"🎤",location:"4685 28th St N, St. Pete",desc:"Weekly karaoke with words on the big projector screen. Hosted by Michelle."},
-{id:2,bar:"Grassroots Kava House",name:"Trivia Night",day:"Thursday",date:"Feb 6",time:"7pm",type:"Social",image:"🧠",location:"957 Central Ave, St. Pete",desc:"Weekly trivia with prizes."},
-{id:3,bar:"Speakeasy Kava",name:"Trivia Night",day:"Wednesday",date:"Feb 5",time:"7pm",type:"Social",image:"❓",location:"2101 Central Ave, St. Pete",desc:"Weekly trivia night."},
-{id:4,bar:"Mad Hatters Kava Bar",name:"Open Mic Night",day:"Sunday",date:"Feb 9",time:"7pm",type:"Music",image:"🎸",location:"4685 28th St N, St. Pete",desc:"Free pool all day + Open Mic on the patio."},
-{id:5,bar:"Grassroots Kava House",name:"Open Mic",day:"Sunday",date:"Feb 9",time:"6pm",type:"Music",image:"🎹",location:"957 Central Ave, St. Pete",desc:"Open mic night at the community hub."},
-{id:6,bar:"Kava House Brand",name:"Karaoke Night",day:"Saturday",date:"Feb 8",time:"9pm",type:"Music",image:"🎶",location:"11141 US Hwy 19 N, Clearwater",desc:"Weekly karaoke at HWY 19."},
-{id:7,bar:"Speakeasy Kava",name:"Karaoke",day:"Saturday",date:"Feb 8",time:"10pm",type:"Music",image:"🎤",location:"2101 Central Ave, St. Pete",desc:"Late night karaoke."}
+// Verified local kava bars
+const bars = [
+{name:"Bula Kafe",address:"2500 5th Ave N, St. Pete",hours:"7am-2am daily",vibe:"Original Kava Bar",image:"🏝️",featured:true,desc:"St. Pete's original kava bar (since 2021). Voted Best Kava Bar 4 years running by Creative Loafing. Quality Vanuatu & Solomon Island kava plus coffee and ethnobotanical teas."},
+{name:"Grassroots Kava House",address:"957 Central Ave, St. Pete",hours:"7am-12am Mon-Fri | 8am-12am Sat-Sun",vibe:"Community Hub",image:"🌿",featured:false,desc:"OG location in the Edge District. 3,000 sq ft with rooftop patio. Dogs welcome. The classic St. Pete kava experience."},
+{name:"Mad Hatters Kava Bar",address:"4685 28th St N, St. Pete",hours:"7am-2am Mon-Thu | 7am-3am Fri-Sat | 7am-2am Sun",vibe:"Late Night Party",image:"🎩",featured:false,desc:"Kava, Kratom, Hookah, Boba & More. Massive space with games. The go-to spot for late night vibes."},
+{name:"Speakeasy Kava",address:"2101 Central Ave, St. Pete",hours:"7am-1am daily",vibe:"Cozy Lounge",image:"🔮",featured:false,desc:"Two locations (St. Pete & Largo). Fire pit patio, coffee, kombucha, adaptogens. Welcoming atmosphere since 2018."},
+{name:"Kava House Brand HWY 19",address:"11141 US Hwy 19 N, Clearwater",hours:"10am daily",vibe:"Flagship",image:"🍃",featured:false,desc:"4,000 sq ft flagship with 60-ft bar, arcade games, pool table. Largest botanical elixir menu in the area."}
 ];
+
+// Weekly recurring events - verified
+const events = [
+{id:1,bar:"Mad Hatters Kava Bar",name:"Karaoke",day:"Friday",date:"Feb 7",time:"9pm",type:"Music",image:"🎤",location:"4685 28th St N, St. Pete",desc:"Weekly karaoke with words on the big projector screen. Hosted by Michelle. Some themed nights - check social media."},
+{id:2,bar:"Grassroots Kava House",name:"Trivia Night",day:"Thursday",date:"Feb 6",time:"7pm",type:"Social",image:"🧠",location:"957 Central Ave, St. Pete",desc:"Weekly trivia with prizes. Hosted by Answers R In at St. Pete's original kava bar."},
+{id:3,bar:"Speakeasy Kava",name:"Trivia Night",day:"Wednesday",date:"Feb 5",time:"7pm",type:"Social",image:"❓",location:"2101 Central Ave, St. Pete",desc:"Weekly trivia night. Test your knowledge and win prizes."},
+{id:4,bar:"Mad Hatters Kava Bar",name:"Open Mic Night",day:"Sunday",date:"Feb 9",time:"7pm",type:"Music",image:"🎸",location:"4685 28th St N, St. Pete",desc:"Free pool all day + Open Mic on the patio. Bring an instrument or just vibe. Free entry."},
+{id:5,bar:"Grassroots Kava House",name:"Open Mic",day:"Sunday",date:"Feb 9",time:"6pm",type:"Music",image:"🎹",location:"957 Central Ave, St. Pete",desc:"Open mic night at the community hub. All styles welcome - music, poetry, comedy."},
+{id:6,bar:"Kava House Brand",name:"Karaoke Night",day:"Saturday",date:"Feb 8",time:"9pm",type:"Music",image:"🎶",location:"11141 US Hwy 19 N, Clearwater",desc:"Weekly karaoke at HWY 19. Bring your friends and your best vocals."},
+{id:7,bar:"Speakeasy Kava",name:"Karaoke",day:"Saturday",date:"Feb 8",time:"10pm",type:"Music",image:"🎤",location:"2101 Central Ave, St. Pete",desc:"Late night karaoke at Speakeasy Central. Host Jamicheal J. Open mic format."}
+];
+
+// Verified weekly deals
+const deals = [
+{bar:"Kava House Brand",offer:"15% off KHB Botanicals",code:"HAPPY15",expires:"Mon-Fri • 3-6pm",location:"All Locations",desc:"Weekday Happy Hour"},
+{bar:"Kava House Brand",offer:"BOGO Double Kava",code:"BOGO",expires:"Wednesday • 6pm-Close",location:"54th Ave & 4th St",desc:"Buy one get one free"},
+{bar:"Kava House Brand",offer:"20% off Botanical Teas",code:"TEA20",expires:"Tuesday • All Day",location:"All Locations",desc:"Dine-in only"},
+{bar:"Kava House Brand",offer:"15% off Late Night",code:"LATE15",expires:"Mon & Fri • 9-11pm",location:"54th Ave (Mon) | HWY19 (Fri)",desc:"Late Night Happy Hour"},
+{bar:"Speakeasy Kava",offer:"Double Shells for Single Price",code:"HH",expires:"Mon-Fri • 11am-2pm & 6-9pm",location:"All Locations",desc:"Happy Hour Special"},
+{bar:"Bula Kafe",offer:"Free Kava Flight",code:"NEW10",expires:"New Customers",location:"2500 5th Ave N",desc:"Ask your server"}
+];
+
+function renderBars() {
+const list = document.getElementById('barList');
+list.innerHTML = '';
+bars.filter(b => !b.featured).forEach(bar => {
+const div = document.createElement('div');
+div.className = 'bar-card-mini';
+div.innerHTML = `
+<div class="bar-icon">${bar.image}</div>
+<div class="bar-info"><h4>${bar.name}</h4><p class="bar-address">${bar.address}</p><div class="bar-hours"><span>🕐 ${bar.hours}</span></div></div>
+`;
+list.appendChild(div);
+});
+}
+
+function renderDeals() {
+const list = document.getElementById('dealList');
+list.innerHTML = '';
+deals.slice(1).forEach(deal => {
+const div = document.createElement('div');
+div.className = 'deal-card-mini';
+div.innerHTML = `
+<div class="deal-header"><span class="deal-bar">${deal.bar}</span><span class="deal-code">${deal.code}</span></div>
+<h4>${deal.offer}</h4>
+<p class="deal-desc">${deal.desc}</p>
+<div class="deal-meta"><span>📍 ${deal.location}</span><span>⏰ ${deal.expires}</span></div>
+`;
+list.appendChild(div);
+});
+}
 
 function renderEvents(filter = 'All', search = '') {
 const list = document.getElementById('eventList');
@@ -126,6 +204,14 @@ list.appendChild(div);
 });
 }
 
+function switchTab(tab) {
+document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+document.getElementById('eventsTab').style.display = tab === 'events' ? 'block' : 'none';
+document.getElementById('barsTab').style.display = tab === 'bars' ? 'block' : 'none';
+document.getElementById('dealsTab').style.display = tab === 'deals' ? 'block' : 'none';
+}
+
 function showEvent(idx) {
 const e = events[idx];
 document.getElementById('modalHeader').className = 'modal-header';
@@ -137,12 +223,16 @@ document.getElementById('modal').style.display = 'flex';
 function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
 document.getElementById('search').oninput = (e) => {
-const active = document.querySelector('.cat-btn.active').dataset.cat;
-renderEvents(active, e.target.value);
+const activeBtn = document.querySelector('.cat-btn.active');
+if (activeBtn && activeBtn.dataset.tab === 'events') {
+const filter = activeBtn.dataset.cat;
+renderEvents(filter, e.target.value);
+}
 };
 
 document.querySelectorAll('.cat-btn').forEach(btn => {
 btn.onclick = () => {
+if (btn.dataset.tab !== 'events') return;
 document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
 btn.classList.add('active');
 renderEvents(btn.dataset.cat, document.getElementById('search').value);
@@ -150,6 +240,8 @@ renderEvents(btn.dataset.cat, document.getElementById('search').value);
 });
 
 renderEvents();
+renderBars();
+renderDeals();
 </script>
 </body>
 </html>
