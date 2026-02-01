@@ -5,18 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bula Board - Events, Deals & Vibes in St. Pete</title>
 <meta name="description" content="Events, deals, and vibes — all in one place.">
-<link rel="canonical" href="https://alexborrego.github.io/kavaspot/">
 <link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="Bula Board - Events, Deals & Vibes in St. Pete">
-<meta property="og:description" content="Events, deals, and vibes — all in one place.">
-<meta property="og:type" content="website">
 </head>
 <body>
 <div class="app">
 <header class="header">
 <div class="header-content">
 <div class="logo">
-<div class="logo-icon"><img src="kava-shell.svg" alt="Kava Shell" width="28" height="28"></div>
+<div class="logo-icon"><img src="kava-shell.svg" alt=""></div>
 <h1>Bula Board</h1>
 </div>
 <button class="nav-btn small" onclick="showAbout()">?</button>
@@ -25,26 +21,19 @@
 
 <div class="search-container">
 <div class="search-box">
-<span class="search-icon">🔍</span>
+<img src="glyphs/search.svg" class="search-icon" alt="">
 <input type="text" placeholder="Search events, bars..." id="search" oninput="handleSearch(this.value)">
 </div>
 </div>
 
-<main class="main" id="mainContent">
-<!-- Skeleton Loading State -->
+<main class="main">
 <div id="skeletonLoader" class="skeleton-container">
-<div class="skeleton-card featured"></div>
-<div class="skeleton-list">
-<div class="skeleton-item"></div>
-<div class="skeleton-item"></div>
-<div class="skeleton-item"></div>
-<div class="skeleton-item"></div>
-</div>
+<div class="skeleton-card"></div>
+<div class="skeleton-list"><div class="skeleton-item"></div><div class="skeleton-item"></div><div class="skeleton-item"></div></div>
 </div>
 
-<!-- Events Tab -->
 <div id="eventsTab">
-<div class="filter-bar" id="eventFilterBar">
+<div class="filter-bar">
 <select id="dayFilter" onchange="filterEventsByDay()">
 <option value="All">All Days</option>
 <option value="Monday">Monday</option>
@@ -57,19 +46,15 @@
 </select>
 </div>
 <div class="featured-card" onclick="showEvent(0)">
-<span class="featured-badge">⭐ Featured</span>
-<span class="featured-icon">🎤</span>
+<div class="featured-badge"><img src="glyphs/star.svg" alt=""> Featured</div>
+<img src="glyphs/mic.svg" class="featured-icon" alt="">
 <h3>Karaoke</h3>
 <p>Mad Hatters Kava Bar</p>
-<div class="featured-meta">
-<span>📅 Friday @ 9pm</span>
-<span>📍 St. Pete</span>
-</div>
+<div class="featured-meta"><span><img src="glyphs/calendar.svg" alt=""> Friday @ 9pm</span><span><img src="glyphs/pin.svg" alt=""> St. Pete</span></div>
 </div>
 <div class="event-list" id="eventList"></div>
 </div>
 
-<!-- Bars Tab -->
 <div id="barsTab" style="display:none;">
 <div class="filter-bar">
 <select id="locationFilter" onchange="filterBarsByLocation()">
@@ -79,20 +64,15 @@
 <option value="Largo">Largo</option>
 </select>
 </div>
-<div class="bar-card featured-bar" onclick="showBar(0)">
-<span class="featured-badge">🏆 Best of the Bay</span>
-<span class="featured-icon">🏝️</span>
+<div class="bar-card" onclick="showBar(0)">
+<div class="featured-badge"><img src="glyphs/star.svg" alt=""> Best of the Bay</div>
 <h3>Bula Kafe</h3>
 <p>2500 5th Ave N, St. Pete</p>
-<div class="bar-meta">
-<span>🕐 7am-2am daily</span>
-<span>☕ Coffee + Kava</span>
-</div>
+<div class="bar-meta"><span><img src="glyphs/clock.svg" alt=""> 7am-2am daily</span><span>☕ Coffee + Kava</span></div>
 </div>
 <div class="bar-list" id="barList"></div>
 </div>
 
-<!-- Deals Tab -->
 <div id="dealsTab" style="display:none;">
 <div class="filter-bar">
 <select id="dealDayFilter" onchange="filterDealsByDay()">
@@ -106,8 +86,8 @@
 <option value="Sunday">Sunday</option>
 </select>
 </div>
-<div class="deal-card featured-deal">
-<span class="deal-fire">🔥</span>
+<div class="deal-card">
+<img src="glyphs/star.svg" class="deal-fire" alt="">
 <h3>Best Deal This Week</h3>
 <p>15% off KHB Botanicals</p>
 <span class="deal-location">Kava House Brand</span>
@@ -119,7 +99,7 @@
 
 <section class="newsletter">
 <div class="newsletter-content">
-<span class="newsletter-icon">📬</span>
+<img src="glyphs/mail.svg" alt="">
 <div>
 <h3>Weekly Digest</h3>
 <p>Curated events, every Saturday</p>
@@ -140,13 +120,12 @@
 </footer>
 
 <nav class="bottom-nav">
-<button class="nav-btn active" data-tab="events" onclick="switchTab('events')"><span>📅</span><span>Events</span></button>
-<button class="nav-btn" data-tab="bars" onclick="switchTab('bars')"><span>🏠</span><span>Bars</span></button>
-<button class="nav-btn" data-tab="deals" onclick="switchTab('deals')"><span>🎁</span><span>Deals</span></button>
+<button class="nav-btn active" data-tab="events" onclick="switchTab('events')"><img src="glyphs/calendar.svg" alt=""><span>Events</span></button>
+<button class="nav-btn" data-tab="bars" onclick="switchTab('bars')"><img src="glyphs/coconut.svg" alt=""><span>Bars</span></button>
+<button class="nav-btn" data-tab="deals" onclick="switchTab('deals')"><img src="glyphs/star.svg" alt=""><span>Deals</span></button>
 </nav>
 </div>
 
-<!-- Event Modal -->
 <div class="modal" id="eventModal" onclick="closeEventModal()">
 <div class="modal-content" onclick="event.stopPropagation()">
 <button class="modal-close" onclick="closeEventModal()">✕</button>
@@ -155,7 +134,6 @@
 </div>
 </div>
 
-<!-- Bar Modal -->
 <div class="modal" id="barModal" onclick="closeBarModal()">
 <div class="modal-content" onclick="event.stopPropagation()">
 <button class="modal-close" onclick="closeBarModal()">✕</button>
@@ -164,14 +142,13 @@
 </div>
 </div>
 
-<!-- About Modal -->
 <div class="modal" id="aboutModal" onclick="closeAboutModal()">
 <div class="modal-content" onclick="event.stopPropagation()">
 <button class="modal-close" onclick="closeAboutModal()">✕</button>
 <div class="modal-body about-content">
 <h2>What is Kava?</h2>
-<p>Kava is a traditional South Pacific beverage made from the roots of the <em>Piper methysticum</em> plant. For centuries, Pacific Island cultures have used kava in ceremonial and social settings.</p>
-<p>When consumed, kava has a <strong>relaxing effect on the body</strong>, eases tension, and alleviates stress while enhancing mental clarity, creativity, and sociability. It's similar to alcohol's calming effects but without the hangover.</p>
+<p>Kava is a traditional South Pacific beverage made from the roots of the Piper methysticum plant. For centuries, Pacific Island cultures have used kava in ceremonial and social settings.</p>
+<p>When consumed, kava has a relaxing effect on the body, eases tension, and alleviates stress while enhancing mental clarity, creativity, and sociability.</p>
 <h3>Popular Drinks</h3>
 <ul>
 <li><strong>Kava Shell</strong> - Traditional preparation, served in coconut shells</li>
@@ -180,13 +157,12 @@
 <li><strong>Kava Tea</strong> - Relaxing herbal tea blend</li>
 </ul>
 <h3>About Bula Board</h3>
-<p>We curate the best kava bars, events, and deals in St. Petersburg and Clearwater. Whether you're a kava connoisseur or trying it for the first time, we've got you covered.</p>
-<p class="about-note">Please drink responsibly. Kava may cause drowsiness. Do not operate heavy machinery after consuming.</p>
+<p>We curate the best kava bars, events, and deals in St. Petersburg and Clearwater.</p>
+<p class="about-note">Please drink responsibly. Kava may cause drowsiness.</p>
 </div>
 </div>
 </div>
 
-<!-- For Bars Modal -->
 <div class="modal" id="forBarsModal" onclick="closeForBarsModal()">
 <div class="modal-content" onclick="event.stopPropagation()">
 <button class="modal-close" onclick="closeForBarsModal()">✕</button>
@@ -200,33 +176,30 @@
 <li>Reach a targeted local audience</li>
 </ul>
 <h3>Get Started</h3>
-<p>Email us at <strong>hello@bula.board</strong> to add your bar to our directory.</p>
+<p>Email us at <strong>hello@bula.board</strong></p>
 </div>
 </div>
 </div>
 
 <script>
-// Verified local kava bars with full details
 const bars = [
-{name:"Bula Kafe",address:"2500 5th Ave N, St. Pete, FL 33713",hours:"7am-2am daily",vibe:"Original Kava Bar",image:"🏝️",featured:true,desc:"St. Pete's original kava bar (since 2021). Voted Best Kava Bar 4 years running by Creative Loafing. Quality Vanuatu & Solomon Island kava plus coffee and ethnobotanical teas.",phone:"",map:"https://maps.google.com/?q=2500+5th+Ave+N+St+Pete+FL",menu:"https://bula-kafe.com/"},
-{name:"Grassroots Kava House",address:"957 Central Ave, St. Pete, FL 33705",hours:"7am-12am Mon-Fri | 8am-12am Sat-Sun",vibe:"Community Hub",image:"🌿",featured:false,desc:"OG location in the Edge District. 3,000 sq ft with rooftop patio. Dogs welcome. The classic St. Pete kava experience.",phone:"",map:"https://maps.google.com/?q=957+Central+Ave+St+Pete+FL",menu:""},
-{name:"Mad Hatters Kava Bar",address:"4685 28th St N, St. Pete, FL 33714",hours:"7am-2am Mon-Thu | 7am-3am Fri-Sat | 7am-2am Sun",vibe:"Late Night Party",image:"🎩",featured:false,desc:"Kava, Kratom, Hookah, Boba & More. Massive space with games. The go-to spot for late night vibes. Free pool on Sundays.",phone:"",map:"https://maps.google.com/?q=4685+28th+St+N+St+Pete+FL",menu:"https://www.madhattersteabar.com/kavamenu"},
-{name:"Speakeasy Kava Central",address:"2101 Central Ave, St. Pete, FL 33713",hours:"7am-1am daily",vibe:"Cozy Lounge",image:"🔮",featured:false,desc:"Fire pit patio, coffee, kombucha, adaptogens. Welcoming atmosphere since 2018. Two locations - also in Largo.",phone:"727-329-9915",map:"https://maps.google.com/?q=2101+Central+Ave+St+Pete+FL",menu:"https://speakeasykavabar.com/speakeasy-menu/"},
-{name:"Kava House Brand HWY 19",address:"11141 US Hwy 19 N, Clearwater, FL 33764",hours:"10am-2am daily",vibe:"Flagship",image:"🍃",featured:false,desc:"4,000 sq ft flagship with 60-ft bar, arcade games, pool table. Largest botanical elixir menu in the area.",phone:"",map:"https://maps.google.com/?q=11141+US+Hwy+19+N+Clearwater+FL",menu:"https://www.kavahousebrand.com/menus"}
+{name:"Bula Kafe",address:"2500 5th Ave N, St. Pete, FL 33713",hours:"7am-2am daily",vibe:"Original Kava Bar",image:"coconut",featured:true,desc:"St. Pete's original kava bar (since 2021). Voted Best Kava Bar 4 years running.",phone:"",map:"https://maps.google.com/?q=2500+5th+Ave+N+St+Pete+FL",menu:"https://bula-kafe.com/"},
+{name:"Grassroots Kava House",address:"957 Central Ave, St. Pete, FL 33705",hours:"7am-12am Mon-Fri | 8am-12am Sat-Sun",vibe:"Community Hub",image:"tree",featured:false,desc:"OG location in the Edge District. 3,000 sq ft with rooftop patio. Dogs welcome.",phone:"",map:"https://maps.google.com/?q=957+Central+Ave+St+Pete+FL",menu:""},
+{name:"Mad Hatters Kava Bar",address:"4685 28th St N, St. Pete, FL 33714",hours:"7am-2am Mon-Thu | 7am-3am Fri-Sat | 7am-2am Sun",vibe:"Late Night Party",image:"hat",featured:false,desc:"Kava, Kratom, Hookah, Boba & More. Massive space with games.",phone:"",map:"https://maps.google.com/?q=4685+28th+St+N+St+Pete+FL",menu:"https://www.madhattersteabar.com/kavamenu"},
+{name:"Speakeasy Kava Central",address:"2101 Central Ave, St. Pete, FL 33713",hours:"7am-1am daily",vibe:"Cozy Lounge",image:"crystal",featured:false,desc:"Fire pit patio, coffee, kombucha, adaptogens. Welcoming atmosphere.",phone:"727-329-9915",map:"https://maps.google.com/?q=2101+Central+Ave+St+Pete+FL",menu:"https://speakeasykavabar.com/speakeasy-menu/"},
+{name:"Kava House Brand HWY 19",address:"11141 US Hwy 19 N, Clearwater, FL 33764",hours:"10am-2am daily",vibe:"Flagship",image:"leaf",featured:false,desc:"4,000 sq ft flagship with 60-ft bar, arcade games, pool table.",phone:"",map:"https://maps.google.com/?q=11141+US+Hwy+19+N+Clearwater+FL",menu:"https://www.kavahousebrand.com/menus"}
 ];
 
-// Weekly recurring events - verified
 const events = [
-{id:1,bar:"Mad Hatters Kava Bar",name:"Karaoke",day:"Friday",date:"Feb 7",time:"9pm",type:"Music",image:"🎤",location:"4685 28th St N, St. Pete",desc:"Weekly karaoke with words on the big projector screen. Hosted by Michelle. Some themed nights - check social media."},
-{id:2,bar:"Grassroots Kava House",name:"Trivia Night",day:"Thursday",date:"Feb 6",time:"7pm",type:"Social",image:"🧠",location:"957 Central Ave, St. Pete",desc:"Weekly trivia with prizes. Hosted by Answers R In at St. Pete's original kava bar."},
-{id:3,bar:"Speakeasy Kava Central",name:"Trivia Night",day:"Wednesday",date:"Feb 5",time:"7pm",type:"Social",image:"❓",location:"2101 Central Ave, St. Pete",desc:"Weekly trivia night. Test your knowledge and win prizes."},
-{id:4,bar:"Mad Hatters Kava Bar",name:"Open Mic Night",day:"Sunday",date:"Feb 9",time:"7pm",type:"Music",image:"🎸",location:"4685 28th St N, St. Pete",desc:"Free pool all day + Open Mic on the patio. Bring an instrument or just vibe. Free entry."},
-{id:5,bar:"Grassroots Kava House",name:"Open Mic",day:"Sunday",date:"Feb 9",time:"6pm",type:"Music",image:"🎹",location:"957 Central Ave, St. Pete",desc:"Open mic night at the community hub. All styles welcome - music, poetry, comedy."},
-{id:6,bar:"Kava House Brand HWY 19",name:"Karaoke Night",day:"Saturday",date:"Feb 8",time:"9pm",type:"Music",image:"🎶",location:"11141 US Hwy 19 N, Clearwater",desc:"Weekly karaoke at HWY 19. Bring your friends and your best vocals."},
-{id:7,bar:"Speakeasy Kava Central",name:"Karaoke",day:"Saturday",date:"Feb 8",time:"10pm",type:"Music",image:"🎤",location:"2101 Central Ave, St. Pete",desc:"Late night karaoke at Speakeasy Central. Host Jamicheal J. Open mic format."}
+{id:1,bar:"Mad Hatters Kava Bar",name:"Karaoke",day:"Friday",date:"Feb 7",time:"9pm",type:"Music",image:"mic",location:"4685 28th St N, St. Pete",desc:"Weekly karaoke with words on the big projector screen. Hosted by Michelle."},
+{id:2,bar:"Grassroots Kava House",name:"Trivia Night",day:"Thursday",date:"Feb 6",time:"7pm",type:"Social",image:"brain",location:"957 Central Ave, St. Pete",desc:"Weekly trivia with prizes. Hosted by Answers R In."},
+{id:3,bar:"Speakeasy Kava Central",name:"Trivia Night",day:"Wednesday",date:"Feb 5",time:"7pm",type:"Social",image:"question",location:"2101 Central Ave, St. Pete",desc:"Weekly trivia night. Test your knowledge and win prizes."},
+{id:4,bar:"Mad Hatters Kava Bar",name:"Open Mic Night",day:"Sunday",date:"Feb 9",time:"7pm",type:"Music",image:"guitar",location:"4685 28th St N, St. Pete",desc:"Free pool all day + Open Mic on the patio."},
+{id:5,bar:"Grassroots Kava House",name:"Open Mic",day:"Sunday",date:"Feb 9",time:"6pm",type:"Music",image:"piano",location:"957 Central Ave, St. Pete",desc:"Open mic night at the community hub."},
+{id:6,bar:"Kava House Brand HWY 19",name:"Karaoke Night",day:"Saturday",date:"Feb 8",time:"9pm",type:"Music",image:"mic",location:"11141 US Hwy 19 N, Clearwater",desc:"Weekly karaoke at HWY 19."},
+{id:7,bar:"Speakeasy Kava Central",name:"Karaoke",day:"Saturday",date:"Feb 8",time:"10pm",type:"Music",image:"mic",location:"2101 Central Ave, St. Pete",desc:"Late night karaoke."}
 ];
 
-// Verified weekly deals
 const deals = [
 {bar:"Kava House Brand",offer:"15% off KHB Botanicals",code:"HAPPY15",expires:"Mon-Fri • 3-6pm",location:"All Locations",desc:"Weekday Happy Hour",days:["Monday","Tuesday","Wednesday","Thursday","Friday"]},
 {bar:"Kava House Brand",offer:"BOGO Double Kava",code:"BOGO",expires:"Wednesday • 6pm-Close",location:"54th Ave & 4th St",desc:"Buy one get one free",days:["Wednesday"]},
@@ -236,9 +209,6 @@ const deals = [
 {bar:"Bula Kafe",offer:"Free Kava Flight",code:"NEW10",expires:"New Customers",location:"2500 5th Ave N",desc:"Ask your server",days:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]}
 ];
 
-// Simulated loading delay for skeleton effect
-const loadingDelay = 300;
-
 function initApp() {
 setTimeout(() => {
 document.getElementById('skeletonLoader').style.display = 'none';
@@ -246,25 +216,7 @@ document.getElementById('eventsTab').style.display = 'block';
 renderEvents();
 renderBars();
 renderDeals();
-checkForShareableEvent();
-}, loadingDelay);
-}
-
-function checkForShareableEvent() {
-const params = new URLSearchParams(window.location.search);
-const eventId = params.get('event');
-if (eventId) {
-const eventIndex = events.findIndex(e => e.id === parseInt(eventId));
-if (eventIndex >= 0) {
-switchTab('events');
-setTimeout(() => showEvent(eventIndex), 100);
-}
-}
-}
-
-function getShareableEventUrl(eventId) {
-const baseUrl = window.location.href.split('?')[0];
-return `${baseUrl}?event=${eventId}`;
+}, 300);
 }
 
 function renderBars(filter = 'All', search = '') {
@@ -272,17 +224,14 @@ const list = document.getElementById('barList');
 list.innerHTML = '';
 const filtered = bars.filter(b => {
 const matchesLocation = filter === 'All' || b.address.includes(filter);
-const matchesSearch = search === '' || b.name.toLowerCase().includes(search.toLowerCase()) || b.address.toLowerCase().includes(search.toLowerCase());
+const matchesSearch = search === '' || b.name.toLowerCase().includes(search.toLowerCase());
 return matchesLocation && matchesSearch;
 });
 filtered.filter(b => !b.featured).forEach(bar => {
 const div = document.createElement('div');
 div.className = 'bar-card-mini';
 div.onclick = () => showBar(bars.indexOf(bar));
-div.innerHTML = `
-<div class="bar-icon">${bar.image}</div>
-<div class="bar-info"><h4>${bar.name}</h4><p class="bar-address">${bar.address.split(',')[0]}</p><div class="bar-hours"><span>🕐 ${bar.hours.split('|')[0].trim()}</span></div></div>
-`;
+div.innerHTML = `<div class="bar-icon"><img src="glyphs/${bar.image}.svg" alt=""></div><div class="bar-info"><h4>${bar.name}</h4><p class="bar-address">${bar.address.split(',')[0]}</p><div class="bar-hours"><span>${bar.hours.split('|')[0].trim()}</span></div></div>`;
 list.appendChild(div);
 });
 }
@@ -290,20 +239,11 @@ list.appendChild(div);
 function renderDeals(filterDay = 'All', search = '') {
 const list = document.getElementById('dealList');
 list.innerHTML = '';
-const filtered = deals.filter(d => {
-const matchesDay = filterDay === 'All' || (d.days && d.days.includes(filterDay));
-const matchesSearch = search === '' || d.bar.toLowerCase().includes(search.toLowerCase()) || d.offer.toLowerCase().includes(search.toLowerCase());
-return matchesDay && matchesSearch;
-});
+const filtered = deals.filter(d => (filterDay === 'All' || (d.days && d.days.includes(filterDay))) && (search === '' || d.bar.toLowerCase().includes(search.toLowerCase())));
 filtered.slice(1).forEach(deal => {
 const div = document.createElement('div');
 div.className = 'deal-card-mini';
-div.innerHTML = `
-<div class="deal-header"><span class="deal-bar">${deal.bar}</span><span class="deal-code">${deal.code}</span></div>
-<h4>${deal.offer}</h4>
-<p class="deal-desc">${deal.desc}</p>
-<div class="deal-meta"><span>📍 ${deal.location}</span><span>⏰ ${deal.expires}</span></div>
-`;
+div.innerHTML = `<div class="deal-header"><span class="deal-bar">${deal.bar}</span><span class="deal-code">${deal.code}</span></div><h4>${deal.offer}</h4><p class="deal-desc">${deal.desc}</p><div class="deal-meta"><span>📍 ${deal.location}</span><span>⏰ ${deal.expires}</span></div>`;
 list.appendChild(div);
 });
 }
@@ -311,89 +251,48 @@ list.appendChild(div);
 function renderEvents(filter = 'All', search = '') {
 const list = document.getElementById('eventList');
 list.innerHTML = '';
-const filtered = events.filter(e => {
-const matchesCategory = filter === 'All' || e.type === filter;
-const matchesSearch = search === '' || e.name.toLowerCase().includes(search.toLowerCase()) || e.bar.toLowerCase().includes(search.toLowerCase());
-return matchesCategory && matchesSearch;
-});
-if (filtered.length === 0) {
-list.innerHTML = '<div class="empty-state"><span>🔍</span><p>No events found</p></div>';
-return;
-}
+const filtered = events.filter(e => (filter === 'All' || e.type === filter) && (search === '' || e.name.toLowerCase().includes(search.toLowerCase()) || e.bar.toLowerCase().includes(search.toLowerCase())));
+if (filtered.length === 0) { list.innerHTML = '<div class="empty-state"><img src="glyphs/question.svg" alt=""><p>No events found</p></div>'; return; }
 filtered.forEach(e => {
 const div = document.createElement('div');
 div.className = 'event-card';
 div.onclick = () => showEvent(events.indexOf(e));
-div.innerHTML = `
-<div class="event-date"><span class="event-icon">${e.image}</span><span>${e.day}</span></div>
-<div class="event-info"><span class="event-type">${e.type}</span><span class="event-time">${e.time}</span><h4>${e.name}</h4><p>${e.bar}</p></div>
-<button class="fav-btn" onclick="event.stopPropagation()">🤍</button>
-`;
+div.innerHTML = `<div class="event-date"><img src="glyphs/${e.image}.svg" alt=""><span>${e.day}</span></div><div class="event-info"><span class="event-type">${e.type}</span><span class="event-time">${e.time}</span><h4>${e.name}</h4><p>${e.bar}</p></div><button class="fav-btn" onclick="event.stopPropagation()"><img src="glyphs/heart.svg" alt=""></button>`;
 list.appendChild(div);
 });
 }
 
 function filterEventsByDay() {
 const day = document.getElementById('dayFilter').value;
-const search = document.getElementById('search').value;
-if (day === 'All') {
-renderEvents('All', search);
-} else {
-const filtered = events.filter(e => e.day === day);
-renderFilteredEvents(filtered, search);
-}
+renderEvents(day === 'All' ? 'All' : 'All', document.getElementById('search').value);
+const filtered = day === 'All' ? events : events.filter(e => e.day === day);
+renderFilteredEvents(filtered);
 }
 
-function renderFilteredEvents(filtered, search = '') {
+function renderFilteredEvents(filtered) {
 const list = document.getElementById('eventList');
 list.innerHTML = '';
-const results = filtered.filter(e => search === '' || e.name.toLowerCase().includes(search.toLowerCase()) || e.bar.toLowerCase().includes(search.toLowerCase()));
-if (results.length === 0) {
-list.innerHTML = '<div class="empty-state"><span>🔍</span><p>No events found</p></div>';
-return;
-}
-results.forEach(e => {
+if (filtered.length === 0) { list.innerHTML = '<div class="empty-state"><img src="glyphs/question.svg" alt=""><p>No events found</p></div>'; return; }
+filtered.forEach(e => {
 const div = document.createElement('div');
 div.className = 'event-card';
 div.onclick = () => showEvent(events.indexOf(e));
-div.innerHTML = `
-<div class="event-date"><span class="event-icon">${e.image}</span><span>${e.day}</span></div>
-<div class="event-info"><span class="event-type">${e.type}</span><span class="event-time">${e.time}</span><h4>${e.name}</h4><p>${e.bar}</p></div>
-<button class="fav-btn" onclick="event.stopPropagation()">🤍</button>
-`;
+div.innerHTML = `<div class="event-date"><img src="glyphs/${e.image}.svg" alt=""><span>${e.day}</span></div><div class="event-info"><span class="event-type">${e.type}</span><span class="event-time">${e.time}</span><h4>${e.name}</h4><p>${e.bar}</p></div><button class="fav-btn" onclick="event.stopPropagation()"><img src="glyphs/heart.svg" alt=""></button>`;
 list.appendChild(div);
 });
 }
 
-function filterBarsByLocation() {
-const location = document.getElementById('locationFilter').value;
-const search = document.getElementById('search').value;
-renderBars(location, search);
-}
-
-function filterDealsByDay() {
-const day = document.getElementById('dealDayFilter').value;
-const search = document.getElementById('search').value;
-renderDeals(day, search);
-}
+function filterBarsByLocation() { renderBars(document.getElementById('locationFilter').value, document.getElementById('search').value); }
+function filterDealsByDay() { renderDeals(document.getElementById('dealDayFilter').value, document.getElementById('search').value); }
 
 function handleSearch(query) {
 const activeTab = document.querySelector('.nav-btn.active').dataset.tab;
 if (activeTab === 'events') {
 const day = document.getElementById('dayFilter').value;
-if (day === 'All') {
-renderEvents('All', query);
-} else {
-const filtered = events.filter(e => e.day === day);
-renderFilteredEvents(filtered, query);
-}
-} else if (activeTab === 'bars') {
-const location = document.getElementById('locationFilter').value;
-renderBars(location, query);
-} else if (activeTab === 'deals') {
-const day = document.getElementById('dealDayFilter').value;
-renderDeals(day, query);
-}
+if (day === 'All') renderEvents('All', query);
+else { const filtered = events.filter(e => e.day === day); renderFilteredEvents(filter.filter(e => query === '' || e.name.toLowerCase().includes(query) || e.bar.toLowerCase().includes(query))); }
+} else if (activeTab === 'bars') renderBars(document.getElementById('locationFilter').value, query);
+else renderDeals(document.getElementById('dealDayFilter').value, query);
 }
 
 function switchTab(tab) {
@@ -402,95 +301,43 @@ document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
 document.getElementById('eventsTab').style.display = tab === 'events' ? 'block' : 'none';
 document.getElementById('barsTab').style.display = tab === 'bars' ? 'block' : 'none';
 document.getElementById('dealsTab').style.display = tab === 'deals' ? 'block' : 'none';
-document.getElementById('subtitle').textContent = tab === 'events' ? `${events.length} events • ${bars.length} bars` : (tab === 'bars' ? `${bars.length} bars` : `${deals.length} deals`);
 }
 
 function showEvent(idx) {
 const e = events[idx];
-const shareUrl = getShareableEventUrl(e.id);
+const shareUrl = window.location.href.split('?')[0] + '?event=' + e.id;
 document.getElementById('eventModalHeader').className = 'modal-header';
-document.getElementById('eventModalHeader').innerHTML = `<span class="modal-icon">${e.image}</span><span class="modal-type">${e.type}</span>`;
-document.getElementById('eventModalBody').innerHTML = `
-<h3>${e.name}</h3><p class="modal-bar">${e.bar}</p><p class="modal-desc">${e.desc}</p>
-<div class="modal-details">
-<div><p class="detail-label">${e.day}, ${e.date}</p><p class="detail-time">${e.time}</p></div>
-<div><p>📍</p><p>${e.location}</p></div>
-</div>
-<div class="modal-actions">
-<button class="calendar-btn" onclick="downloadICS('${e.name}','${e.bar}','${e.day} ${e.date}','${e.time}','${e.location}')">📅 Add to Calendar</button>
-<button class="share-btn" onclick="shareEvent('${e.name}','${e.bar}','${e.day} ${e.time}','${shareUrl}')">📤 Share</button>
-</div>
-<div class="share-link">
-<input type="text" value="${shareUrl}" readonly onclick="this.select()"> <button onclick="copyShareLink('${shareUrl}')">Copy</button>
-</div>
-`;
+document.getElementById('eventModalHeader').innerHTML = `<img src="glyphs/${e.image}.svg" alt=""><span class="modal-type">${e.type}</span>`;
+document.getElementById('eventModalBody').innerHTML = `<h3>${e.name}</h3><p class="modal-bar">${e.bar}</p><p class="modal-desc">${e.desc}</p><div class="modal-details"><div><img src="glyphs/calendar.svg" alt=""><div><p class="detail-label">${e.day}, ${e.date}</p><p class="detail-time">${e.time}</p></div></div><div><img src="glyphs/pin.svg" alt=""><p>${e.location}</p></div></div><div class="modal-actions"><button class="calendar-btn" onclick="downloadICS('${e.name}','${e.bar}','${e.day} ${e.date}','${e.time}','${e.location}')">Add to Calendar</button><button class="share-btn" onclick="shareEvent('${e.name}','${e.bar}','${e.day} ${e.time}','${shareUrl}')">Share</button></div><div class="share-link"><input type="text" value="${shareUrl}" readonly onclick="this.select()"><button onclick="copyShareLink('${shareUrl}')">Copy</button></div>`;
 document.getElementById('eventModal').style.display = 'flex';
 }
 
 function showBar(idx) {
 const b = bars[idx];
 document.getElementById('barModalHeader').className = 'modal-header bar-modal-header';
-document.getElementById('barModalHeader').innerHTML = `<span class="modal-icon">${b.image}</span>`;
-document.getElementById('barModalBody').innerHTML = `
-<h3>${b.name}</h3>
-<p class="modal-bar">${b.vibe}</p>
-<p class="modal-desc">${b.desc}</p>
-<div class="modal-details">
-<div><p>📍</p><p>${b.address}</p></div>
-<div><p>🕐</p><p>${b.hours}</p></div>
-${b.phone ? `<div><p>📞</p><p><a href="tel:${b.phone}">${b.phone}</a></p></div>` : ''}
-</div>
-<div class="modal-actions">
-<a href="${b.map}" target="_blank" rel="noopener" class="map-btn">🗺️ Open in Maps</a>
-${b.menu ? `<a href="${b.menu}" target="_blank" rel="noopener" class="menu-btn">📋 View Menu</a>` : ''}
-</div>
-`;
+document.getElementById('barModalHeader').innerHTML = `<img src="glyphs/${b.image}.svg" alt="">`;
+document.getElementById('barModalBody').innerHTML = `<h3>${b.name}</h3><p class="modal-bar">${b.vibe}</p><p class="modal-desc">${b.desc}</p><div class="modal-details"><div><img src="glyphs/pin.svg" alt=""><p>${b.address}</p></div><div><img src="glyphs/clock.svg" alt=""><p>${b.hours}</p></div>${b.phone ? `<div><img src="glyphs/question.svg" alt=""><p><a href="tel:${b.phone}">${b.phone}</a></p></div>` : ''}</div><div class="modal-actions"><a href="${b.map}" target="_blank" rel="noopener" class="map-btn">Open in Maps</a>${b.menu ? `<a href="${b.menu}" target="_blank" rel="noopener" class="menu-btn">View Menu</a>` : ''}</div>`;
 document.getElementById('barModal').style.display = 'flex';
 }
 
 function downloadICS(title, location, date, time, fullLocation) {
-const startDate = date.replace(/ /g, '').toUpperCase() + 'T' + time.replace(/:/g, '').replace('pm','').replace('am','') + '00';
-const endDate = startDate;
-const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:${title} at ${location}
-DTSTART:${startDate}
-DTEND:${endDate}
-LOCATION:${fullLocation}
-DESCRIPTION:${title} at ${location}
-END:VEVENT
-END:VCALENDAR`;
+const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${title} at ${location}\nDTSTART:${date.replace(/ /g,'').toUpperCase()}T${time.replace(/:/g,'').replace('pm','').replace('am','')}00\nLOCATION:${fullLocation}\nDESCRIPTION:${title} at ${location}\nEND:VEVENT\nEND:VCALENDAR`;
 const blob = new Blob([icsContent], { type: 'text/calendar' });
-const url = URL.createObjectURL(blob);
 const a = document.createElement('a');
-a.href = url;
-a.download = 'kavaspot-event.ics';
+a.href = URL.createObjectURL(blob);
+a.download = 'bula-board-event.ics';
 a.click();
-URL.revokeObjectURL(url);
 }
 
 function shareEvent(name, bar, dayTime, shareUrl) {
-const text = `${name} at ${bar} - ${dayTime}\n\n${shareUrl}`;
-if (navigator.share) {
-navigator.share({ title: 'Bula Board Event', text: text, url: shareUrl });
-} else {
-navigator.clipboard.writeText(text);
-alert('Copied to clipboard!');
-}
+const text = `${name} at ${bar} - ${dayTime}`;
+if (navigator.share) navigator.share({ title: 'Bula Board Event', text: text, url: shareUrl });
+else { navigator.clipboard.writeText(text + '\n' + shareUrl); alert('Copied to clipboard!'); }
 }
 
-function copyShareLink(url) {
-navigator.clipboard.writeText(url);
-alert('Link copied to clipboard!');
-}
+function copyShareLink(url) { navigator.clipboard.writeText(url); alert('Link copied!'); }
 
-function handleNewsletter(e) {
-e.preventDefault();
-const email = e.target.querySelector('input').value;
-alert('Thanks for subscribing! You\'ll receive our weekly digest at ' + email);
-e.target.reset();
-}
+function handleNewsletter(e) { e.preventDefault(); alert('Thanks for subscribing!'); e.target.reset(); }
 
 function showAbout() { document.getElementById('aboutModal').style.display = 'flex'; }
 function closeAboutModal() { document.getElementById('aboutModal').style.display = 'none'; }
@@ -499,7 +346,6 @@ function closeForBarsModal() { document.getElementById('forBarsModal').style.dis
 function closeEventModal() { document.getElementById('eventModal').style.display = 'none'; }
 function closeBarModal() { document.getElementById('barModal').style.display = 'none'; }
 
-// Initialize app
 initApp();
 </script>
 </body>
