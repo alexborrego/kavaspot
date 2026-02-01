@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KavaSpot - Your Weekly Guide to Kava in St. Pete</title>
+<meta name="description" content="Events, deals, and vibes — all in one place.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+<header class="header">
+<div class="header-content">
+<div class="logo">
+<div class="logo-icon">🌿</div>
+<h1>KavaSpot</h1>
+</div>
+<span class="badge">St. Pete + Clearwater</span>
+</div>
+</header>
+
+<section class="hero">
+<div class="hero-top">
+<div>
+<h2>This Week</h2>
+<p class="subtitle">7 events • 5 bars</p>
+</div>
+<div class="date">
+<p class="date-day">Jan 31</p>
+<p class="date-weekday">Saturday</p>
+</div>
+</div>
+<div class="search-box">
+<span class="search-icon">🔍</span>
+<input type="text" placeholder="Search events, bars..." id="search">
+</div>
+</section>
+
+<section class="categories">
+<button class="cat-btn active" data-cat="All">All</button>
+<button class="cat-btn" data-cat="Social">Social</button>
+<button class="cat-btn" data-cat="Music">Music</button>
+</section>
+
+<main class="main">
+<!-- Featured Event -->
+<div class="featured-card" onclick="showEvent(0)">
+<span class="featured-badge">⭐ Featured</span>
+<span class="featured-icon">🎤</span>
+<h3>Karaoke</h3>
+<p>Mad Hatters Kava Bar</p>
+<div class="featured-meta">
+<span>📅 Friday @ 9pm</span>
+<span>📍 St. Pete</span>
+</div>
+</div>
+
+<!-- Event List -->
+<div class="event-list" id="eventList"></div>
+</main>
+
+<section class="newsletter">
+<div class="newsletter-content">
+<span class="newsletter-icon">📬</span>
+<div>
+<h3>Weekly Digest</h3>
+<p>Curated events, every Saturday</p>
+</div>
+</div>
+<div class="newsletter-form">
+<input type="email" placeholder="your@email.com">
+<button>Join</button>
+</div>
+</section>
+
+<footer class="footer">
+<p>KavaSpot • St. Pete + Clearwater</p>
+<div class="footer-links">
+<a href="#">For Bars</a>
+<a href="#">About</a>
+</div>
+</footer>
+
+<nav class="bottom-nav">
+<button class="nav-btn active" data-tab="events"><span>📅</span><span>Events</span></button>
+<button class="nav-btn" data-tab="bars"><span>🏠</span><span>Bars</span></button>
+<button class="nav-btn" data-tab="deals"><span>🎁</span><span>Deals</span></button>
+</nav>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal" onclick="closeModal()">
+<div class="modal-content" onclick="event.stopPropagation()">
+<button class="modal-close" onclick="closeModal()">✕</button>
+<div class="modal-header" id="modalHeader"></div>
+<div class="modal-body" id="modalBody"></div>
+</div>
+</div>
+
+<script>
+const events = [
+{id:1,bar:"Mad Hatters Kava Bar",name:"Karaoke",day:"Friday",date:"Feb 7",time:"9pm",type:"Music",image:"🎤",location:"4685 28th St N, St. Pete",desc:"Weekly karaoke with words on the big projector screen. Hosted by Michelle."},
+{id:2,bar:"Grassroots Kava House",name:"Trivia Night",day:"Thursday",date:"Feb 6",time:"7pm",type:"Social",image:"🧠",location:"957 Central Ave, St. Pete",desc:"Weekly trivia with prizes."},
+{id:3,bar:"Speakeasy Kava",name:"Trivia Night",day:"Wednesday",date:"Feb 5",time:"7pm",type:"Social",image:"❓",location:"2101 Central Ave, St. Pete",desc:"Weekly trivia night."},
+{id:4,bar:"Mad Hatters Kava Bar",name:"Open Mic Night",day:"Sunday",date:"Feb 9",time:"7pm",type:"Music",image:"🎸",location:"4685 28th St N, St. Pete",desc:"Free pool all day + Open Mic on the patio."},
+{id:5,bar:"Grassroots Kava House",name:"Open Mic",day:"Sunday",date:"Feb 9",time:"6pm",type:"Music",image:"🎹",location:"957 Central Ave, St. Pete",desc:"Open mic night at the community hub."},
+{id:6,bar:"Kava House Brand",name:"Karaoke Night",day:"Saturday",date:"Feb 8",time:"9pm",type:"Music",image:"🎶",location:"11141 US Hwy 19 N, Clearwater",desc:"Weekly karaoke at HWY 19."},
+{id:7,bar:"Speakeasy Kava",name:"Karaoke",day:"Saturday",date:"Feb 8",time:"10pm",type:"Music",image:"🎤",location:"2101 Central Ave, St. Pete",desc:"Late night karaoke."}
+];
+
+function renderEvents(filter = 'All', search = '') {
+const list = document.getElementById('eventList');
+list.innerHTML = '';
+const filtered = events.filter(e => (filter === 'All' || e.type === filter) &&
+(e.name.toLowerCase().includes(search.toLowerCase()) || e.bar.toLowerCase().includes(search.toLowerCase())));
+filtered.forEach(e => {
+const div = document.createElement('div');
+div.className = 'event-card';
+div.onclick = () => showEvent(events.indexOf(e));
+div.innerHTML = `
+<div class="event-date"><span class="event-icon">${e.image}</span><span>${e.day}</span></div>
+<div class="event-info"><span class="event-type">${e.type}</span><span class="event-time">${e.time}</span><h4>${e.name}</h4><p>${e.bar}</p></div>
+<button class="fav-btn" onclick="event.stopPropagation()">🤍</button>
+`;
+list.appendChild(div);
+});
+}
+
+function showEvent(idx) {
+const e = events[idx];
+document.getElementById('modalHeader').className = 'modal-header';
+document.getElementById('modalHeader').innerHTML = `<span class="modal-icon">${e.image}</span><span class="modal-type">${e.type}</span>`;
+document.getElementById('modalBody').innerHTML = `<h3>${e.name}</h3><p class="modal-bar">${e.bar}</p><p class="modal-desc">${e.desc}</p><div class="modal-details"><div><p class="detail-label">${e.day}, ${e.date}</p><p class="detail-time">${e.time}</p></div><div><p>📍</p><p>${e.location}</p></div></div><button class="calendar-btn">Add to Calendar</button>`;
+document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+document.getElementById('search').oninput = (e) => {
+const active = document.querySelector('.cat-btn.active').dataset.cat;
+renderEvents(active, e.target.value);
+};
+
+document.querySelectorAll('.cat-btn').forEach(btn => {
+btn.onclick = () => {
+document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+renderEvents(btn.dataset.cat, document.getElementById('search').value);
+};
+});
+
+renderEvents();
+</script>
+</body>
+</html>
