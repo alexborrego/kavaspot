@@ -1,10 +1,12 @@
 import { FormEvent, useState } from 'react'
+import { trackEvent } from '../../utils/analytics'
 
 export const Newsletter = () => {
   const [email, setEmail] = useState('')
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
+    trackEvent('Newsletter Signup', { source: 'homepage' })
     alert(`Thanks for subscribing! You'll receive our weekly digest at ${email}`)
     setEmail('')
   }

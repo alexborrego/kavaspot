@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react'
 import { useSupabase } from '../hooks/useSupabase'
+import { trackEvent } from '../utils/analytics'
 import type { TabType, Bar, Event, Deal, EventCategory, BarHours } from '../types'
 
 interface AppContextType {
@@ -41,17 +42,73 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const { bars, events, deals, categories, barHours, loading, error } = useSupabase()
 
   // UI State
-  const [activeTab, setActiveTab] = useState<TabType>('events')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [categoryFilter, setCategoryFilter] = useState('All')
-  const [locationFilter, setLocationFilter] = useState('All')
-  const [dayFilter, setDayFilter] = useState('All')
+  const [activeTab, setActiveTabState] = useState<TabType>('events')
+  const [searchQuery, setSearchQueryState] = useState('')
+  const [categoryFilter, setCategoryFilterState] = useState('All')
+  const [locationFilter, setLocationFilterState] = useState('All')
+  const [dayFilter, setDayFilterState] = useState('All')
 
   // Modal State
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
-  const [selectedBar, setSelectedBar] = useState<Bar | null>(null)
-  const [showAboutModal, setShowAboutModal] = useState(false)
-  const [showForBarsModal, setShowForBarsModal] = useState(false)
+  const [selectedEvent, setSelectedEventState] = useState<Event | null>(null)
+  const [selectedBar, setSelectedBarState] = useState<Bar | null>(null)
+  const [showAboutModal, setShowAboutModalState] = useState(false)
+  const [showForBarsModal, setShowForBarsModalState] = useState(false)
+
+  // Wrapped setters with analytics
+  const setActiveTab = (tab: TabType) => {
+    setActiveTabState(tab)
+    trackEvent('Tab Switch', { tab })
+  }
+
+  const setSearchQuery = (query: string) => {
+    setSearchQueryState(query)
+    if (query.length > 2) {
+      trackEvent('Search', { query_length: query.length })
+    }
+  }
+
+  const setCategoryFilter = (filter: string) => {
+    setCategoryFilterState(filter)
+    trackEvent('Filter: Category', { category: filter })
+  }
+
+  const setLocationFilter = (filter: string) => {
+    setLocationFilterState(filter)
+    trackEvent('Filter: Location', { location: filter })
+  }
+
+  const setDayFilter = (filter: string) => {
+    setDayFilterState(filter)
+    trackEvent('Filter: Day', { day: filter })
+  }
+
+  const setSelectedEvent = (event: Event | null) => {
+    setSelectedEventState(event)
+    if (event) {
+      trackEvent('Event Click', { event_name: event.name })
+    }
+  }
+
+  const setSelectedBar = (bar: Bar | null) => {
+    setSelectedBarState(bar)
+    if (bar) {
+      trackEvent('Bar Click', { bar_name: bar.name })
+    }
+  }
+
+  const setShowAboutModal = (show: boolean) => {
+    setShowAboutModalState(show)
+    if (show) {
+      trackEvent('Modal Open', { modal: 'About' })
+    }
+  }
+
+  const setShowForBarsModal = (show: boolean) => {
+    setShowForBarsModalState(show)
+    if (show) {
+      trackEvent('Modal Open', { modal: 'For Bars' })
+    }
+  }
 
   const value = {
     bars,
