@@ -39,7 +39,7 @@ export const UnifiedFeed = () => {
 
         const matchesCategory = categoryFilter.includes('All') ||
           (event.event_category_id && categoryFilter.includes(event.event_category_id))
-        const matchesLocation = locationFilter === 'All' || bar?.city === locationFilter
+        const matchesLocation = locationFilter.includes('All') || (bar?.city && locationFilter.includes(bar.city))
 
         if (matchesSearch && matchesCategory && matchesLocation) {
           const eventTime = getEventDateTime(event)
@@ -60,7 +60,7 @@ export const UnifiedFeed = () => {
           deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
 
-        const matchesLocation = locationFilter === 'All' || bar?.city === locationFilter
+        const matchesLocation = locationFilter.includes('All') || (bar?.city && locationFilter.includes(bar.city))
 
         if (matchesSearch && matchesLocation) {
           const dealTime = getDealDateTime(deal)

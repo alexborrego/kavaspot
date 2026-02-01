@@ -19,7 +19,7 @@ export const BarsTab = () => {
   // Filter bars
   const filteredBars = useMemo(() => {
     return bars.filter(bar => {
-      const matchesLocation = locationFilter === 'All' || bar.city === locationFilter
+      const matchesLocation = locationFilter.includes('All') || locationFilter.includes(bar.city)
       const matchesSearch = searchQuery === '' ||
         bar.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (bar.address_line1?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
@@ -37,7 +37,12 @@ export const BarsTab = () => {
     const today = new Date().getDay()
     const todayHours = hours.find(h => h.day_of_week === today)
     if (todayHours && !todayHours.is_closed) {
-      return `${formatTime(todayHours.open_time)}-${formatTime(todayHours.close_time)}`
+      const openTime = formatTime(todayHours.open_time)
+      const closeTime = formatTime(todayHours.close_time)
+      if (openTime === 'TBD' && closeTime === 'TBD') {
+        return 'Hours vary'
+      }
+      return `${openTime}-${closeTime}`
     }
     return 'Check hours'
   }
@@ -54,8 +59,8 @@ export const BarsTab = () => {
     <div id="barsTab">
       <div className="filter-bar">
         <select
-          value={locationFilter}
-          onChange={(e) => setLocationFilter(e.target.value)}
+          value={locationFilter[0] || 'All'}
+          onChange={(e) => setLocationFilter([e.target.value])}
         >
           <option value="All">All Locations</option>
           <option value="St. Pete">St. Pete</option>
@@ -64,7 +69,7 @@ export const BarsTab = () => {
         </select>
       </div>
 
-      {featuredBar && locationFilter === 'All' && !searchQuery && (
+      {featuredBar && locationFilter.includes('All') && !searchQuery && (
         <div
           className="bar-card featured-bar"
           onClick={() => handleBarClick(featuredBar)}
@@ -149,12 +154,15 @@ export const BarsTab = () => {
                   {getBarHours(selectedBar.id).length > 0
                     ? getBarHours(selectedBar.id)
                         .map(
-                          h =>
-                            `${DAYS_OF_WEEK[h.day_of_week].slice(0, 3)}: ${
+                          h => {
+                            const openTime = formatTime(h.open_time)
+                            const closeTime = formatTime(h.close_time)
+                            return `${DAYS_OF_WEEK[h.day_of_week].slice(0, 3)}: ${
                               h.is_closed
                                 ? 'Closed'
-                                : `${formatTime(h.open_time)}-${formatTime(h.close_time)}`
+                                : (openTime === 'TBD' && closeTime === 'TBD' ? 'Hours vary' : `${openTime}-${closeTime}`)
                             }`
+                          }
                         )
                         .join(' | ')
                     : 'Hours vary'}

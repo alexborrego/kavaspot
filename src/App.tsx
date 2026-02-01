@@ -87,7 +87,8 @@ const AppContent = () => {
           <FilterChips
             chips={locationChips}
             activeValue={locationFilter}
-            onChange={(value) => setLocationFilter(Array.isArray(value) ? value[0] : value)}
+            onChange={(value) => setLocationFilter(Array.isArray(value) ? value : [value])}
+            multiSelect={true}
           />
         </div>
       </div>

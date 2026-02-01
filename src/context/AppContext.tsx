@@ -22,8 +22,8 @@ interface AppContextType {
   setSearchQuery: (query: string) => void
   categoryFilter: string[]
   setCategoryFilter: (filter: string[]) => void
-  locationFilter: string
-  setLocationFilter: (filter: string) => void
+  locationFilter: string[]
+  setLocationFilter: (filter: string[]) => void
   dayFilter: string
   setDayFilter: (filter: string) => void
 
@@ -50,7 +50,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [activeTab, setActiveTabState] = useState<TabType>('events')
   const [searchQuery, setSearchQueryState] = useState('')
   const [categoryFilter, setCategoryFilterState] = useState<string[]>(['All'])
-  const [locationFilter, setLocationFilterState] = useState('All')
+  const [locationFilter, setLocationFilterState] = useState<string[]>(['All'])
   const [dayFilter, setDayFilterState] = useState('All')
 
   // Modal State
@@ -83,9 +83,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     trackEvent('Filter: Category', { categories: filter.join(', ') })
   }
 
-  const setLocationFilter = (filter: string) => {
+  const setLocationFilter = (filter: string[]) => {
     setLocationFilterState(filter)
-    trackEvent('Filter: Location', { location: filter })
+    trackEvent('Filter: Location', { locations: filter.join(', ') })
   }
 
   const setDayFilter = (filter: string) => {
