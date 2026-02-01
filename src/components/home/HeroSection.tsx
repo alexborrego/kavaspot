@@ -2,9 +2,8 @@ export const HeroSection = () => {
   return (
     <div className="hero-section">
       <div className="hero-content">
-        <span className="hero-badge">🌺 Your Kava Guide</span>
         <h2 className="hero-title">
-          Your <em>Kava Culture</em><br />Hub
+          Your <em>Kava Bar</em><br />Companion
         </h2>
         <p className="hero-subtitle">
           Weekly events, exclusive deals, and hidden gems across the best kava bars in town.

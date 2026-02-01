@@ -7,6 +7,8 @@ import { Loading } from './components/common/Loading'
 import { Newsletter } from './components/home/Newsletter'
 import { AboutModal } from './components/modals/AboutModal'
 import { ForBarsModal } from './components/modals/ForBarsModal'
+import { EventModal } from './components/modals/EventModal'
+import { DealModal } from './components/modals/DealModal'
 import { EventsTab } from './components/events/EventsTab'
 import { BarsTab } from './components/bars/BarsTab'
 import { DealsTab } from './components/deals/DealsTab'
@@ -22,6 +24,8 @@ const AppContent = () => {
     setShowForBarsModal,
     categories,
     bars,
+    typeFilter,
+    setTypeFilter,
     categoryFilter,
     setCategoryFilter,
     locationFilter,
@@ -54,6 +58,12 @@ const AppContent = () => {
   }
 
   // Create filter chips
+  const typeChips = [
+    { label: 'All', value: 'All' },
+    { label: 'Events', value: 'Events', icon: '📅' },
+    { label: 'Deals', value: 'Deals', icon: '💰' }
+  ]
+
   const categoryChips = [
     { label: 'All', value: 'All' },
     ...categories.map(cat => ({ label: cat.name, value: cat.id, icon: cat.icon || undefined }))
@@ -72,6 +82,13 @@ const AppContent = () => {
 
       {/* Filter Section */}
       <div className="filters-wrapper">
+        <div className="filter-row">
+          <FilterChips
+            chips={typeChips}
+            activeValue={typeFilter}
+            onChange={setTypeFilter}
+          />
+        </div>
         <div className="filter-row">
           <FilterChips
             chips={categoryChips}
@@ -103,7 +120,7 @@ const AppContent = () => {
       <Newsletter />
 
       <footer className="footer">
-        <p>Bula Board • St. Pete + Clearwater</p>
+        <p>Bula Board • St. Pete</p>
         <div className="footer-links">
           <a href="#" onClick={(e) => { e.preventDefault(); setShowForBarsModal(true) }}>
             For Bars
@@ -113,6 +130,8 @@ const AppContent = () => {
 
       <AboutModal />
       <ForBarsModal />
+      <EventModal />
+      <DealModal />
     </div>
   )
 }

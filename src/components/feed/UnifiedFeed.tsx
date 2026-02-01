@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useApp } from '../../context/AppContext'
 import { EventCard } from './EventCard'
 import { BarCard } from './BarCard'
@@ -15,55 +15,61 @@ type FeedItem = {
 export const UnifiedFeed = () => {
   const {
     events, bars, deals, barHours, searchQuery,
-    setSelectedEvent, setSelectedBar,
-    categoryFilter, locationFilter
+    setSelectedEvent, setSelectedDeal, setSelectedBar,
+    typeFilter, categoryFilter, locationFilter
   } = useApp()
+
+  const [itemsToShow, setItemsToShow] = useState(10)
 
   // Filter and combine all items
   const filteredItems = useMemo(() => {
     const items: FeedItem[] = []
 
-    // Add events
-    events.forEach(event => {
-      const bar = bars.find(b => b.id === event.bar_id)
-      const matchesSearch = searchQuery === '' ||
-        event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+    // Add events (if typeFilter allows)
+    if (typeFilter === 'All' || typeFilter === 'Events') {
+      events.forEach(event => {
+        const bar = bars.find(b => b.id === event.bar_id)
+        const matchesSearch = searchQuery === '' ||
+          event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
 
-      const matchesCategory = categoryFilter === 'All' || event.event_category_id === categoryFilter
-      const matchesLocation = locationFilter === 'All' || bar?.city === locationFilter
+        const matchesCategory = categoryFilter === 'All' || event.event_category_id === categoryFilter
+        const matchesLocation = locationFilter === 'All' || bar?.city === locationFilter
 
-      if (matchesSearch && matchesCategory && matchesLocation) {
-        const eventTime = getEventDateTime(event)
-        items.push({
-          type: 'event',
-          data: { ...event, bar },
-          sortTime: eventTime?.getTime() || 0
-        })
-      }
-    })
+        if (matchesSearch && matchesCategory && matchesLocation) {
+          const eventTime = getEventDateTime(event)
+          items.push({
+            type: 'event',
+            data: { ...event, bar },
+            sortTime: eventTime?.getTime() || 0
+          })
+        }
+      })
+    }
 
-    // Add deals
-    deals.forEach(deal => {
-      const bar = bars.find(b => b.id === deal.bar_id)
-      const matchesSearch = searchQuery === '' ||
-        deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+    // Add deals (if typeFilter allows)
+    if (typeFilter === 'All' || typeFilter === 'Deals') {
+      deals.forEach(deal => {
+        const bar = bars.find(b => b.id === deal.bar_id)
+        const matchesSearch = searchQuery === '' ||
+          deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
 
-      const matchesLocation = locationFilter === 'All' || bar?.city === locationFilter
+        const matchesLocation = locationFilter === 'All' || bar?.city === locationFilter
 
-      if (matchesSearch && matchesLocation) {
-        const dealTime = getDealDateTime(deal)
-        items.push({
-          type: 'deal',
-          data: { ...deal, bar },
-          sortTime: dealTime?.getTime() || Date.now()
-        })
-      }
-    })
+        if (matchesSearch && matchesLocation) {
+          const dealTime = getDealDateTime(deal)
+          items.push({
+            type: 'deal',
+            data: { ...deal, bar },
+            sortTime: dealTime?.getTime() || Date.now()
+          })
+        }
+      })
+    }
 
     return items.sort((a, b) => a.sortTime - b.sortTime)
-  }, [events, bars, deals, searchQuery, categoryFilter, locationFilter])
+  }, [events, bars, deals, searchQuery, typeFilter, categoryFilter, locationFilter])
 
   // Group items by time sections
   const sections = useMemo(() => {
@@ -140,6 +146,7 @@ export const UnifiedFeed = () => {
           key={item.data.id}
           deal={item.data}
           bar={item.data.bar}
+          onClick={() => setSelectedDeal(item.data)}
         />
       )
     }
@@ -153,65 +160,116 @@ export const UnifiedFeed = () => {
     return <EmptyState icon="🔍" message="No events, bars, or deals found" />
   }
 
+  // Calculate total items and create limited sections
+  const totalItems = sections.happeningNow.length + sections.startingSoon.length +
+    sections.laterToday.length + sections.tomorrow.length + sections.thisWeek.length
+
+  const hasMore = totalItems > itemsToShow
+
+  // Limit items across sections
+  const limitedSections = useMemo(() => {
+    let remaining = itemsToShow
+    const limited = {
+      happeningNow: sections.happeningNow.slice(0, remaining),
+      startingSoon: [] as typeof sections.startingSoon,
+      laterToday: [] as typeof sections.laterToday,
+      tomorrow: [] as typeof sections.tomorrow,
+      thisWeek: [] as typeof sections.thisWeek
+    }
+
+    remaining -= limited.happeningNow.length
+    if (remaining > 0) {
+      limited.startingSoon = sections.startingSoon.slice(0, remaining)
+      remaining -= limited.startingSoon.length
+    }
+
+    if (remaining > 0) {
+      limited.laterToday = sections.laterToday.slice(0, remaining)
+      remaining -= limited.laterToday.length
+    }
+
+    if (remaining > 0) {
+      limited.tomorrow = sections.tomorrow.slice(0, remaining)
+      remaining -= limited.tomorrow.length
+    }
+
+    if (remaining > 0) {
+      limited.thisWeek = sections.thisWeek.slice(0, remaining)
+    }
+
+    return limited
+  }, [sections, itemsToShow])
+
   return (
     <div className="unified-feed">
-      {sections.happeningNow.length > 0 && (
+      {limitedSections.happeningNow.length > 0 && (
         <div className="feed-section sticky-section">
           <h2 className="feed-section-title">
             <span className="title-icon">🔴</span>
             Happening Now
           </h2>
           <div className="feed-section-content">
-            {sections.happeningNow.map(renderItem)}
+            {limitedSections.happeningNow.map(renderItem)}
           </div>
         </div>
       )}
 
-      {sections.startingSoon.length > 0 && (
+      {limitedSections.startingSoon.length > 0 && (
         <div className="feed-section">
           <h2 className="feed-section-title">
             <span className="title-icon">⏰</span>
             Starting Soon (Next 2 Hours)
           </h2>
           <div className="feed-section-content">
-            {sections.startingSoon.map(renderItem)}
+            {limitedSections.startingSoon.map(renderItem)}
           </div>
         </div>
       )}
 
-      {sections.laterToday.length > 0 && (
+      {limitedSections.laterToday.length > 0 && (
         <div className="feed-section">
           <h2 className="feed-section-title">
             <span className="title-icon">📅</span>
             Later Today
           </h2>
           <div className="feed-section-content">
-            {sections.laterToday.map(renderItem)}
+            {limitedSections.laterToday.map(renderItem)}
           </div>
         </div>
       )}
 
-      {sections.tomorrow.length > 0 && (
+      {limitedSections.tomorrow.length > 0 && (
         <div className="feed-section">
           <h2 className="feed-section-title">
             <span className="title-icon">🌅</span>
             Tomorrow
           </h2>
           <div className="feed-section-content">
-            {sections.tomorrow.map(renderItem)}
+            {limitedSections.tomorrow.map(renderItem)}
           </div>
         </div>
       )}
 
-      {sections.thisWeek.length > 0 && (
+      {limitedSections.thisWeek.length > 0 && (
         <div className="feed-section">
           <h2 className="feed-section-title">
             <span className="title-icon">📆</span>
             This Week
           </h2>
           <div className="feed-section-content">
-            {sections.thisWeek.map(renderItem)}
+            {limitedSections.thisWeek.map(renderItem)}
           </div>
+        </div>
+      )}
+
+      {hasMore && (
+        <div className="feed-show-more">
+          <button
+            className="btn-secondary btn-full"
+            onClick={() => setItemsToShow(prev => prev + 10)}
+          >
+            Show More
+          </button>
         </div>
       )}
     </div>

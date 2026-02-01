@@ -4,9 +4,10 @@ import { formatTime, DAYS_OF_WEEK } from '../../utils/dateHelpers'
 interface DealCardProps {
   deal: Deal
   bar?: Bar
+  onClick: () => void
 }
 
-export const DealCard: React.FC<DealCardProps> = ({ deal, bar }) => {
+export const DealCard: React.FC<DealCardProps> = ({ deal, bar, onClick }) => {
   const getValidDays = () => {
     if (!deal.is_recurring || !deal.recurrence_days) return 'Limited time'
     return deal.recurrence_days.map(d => DAYS_OF_WEEK[d].slice(0, 3)).join(', ')
@@ -23,7 +24,7 @@ export const DealCard: React.FC<DealCardProps> = ({ deal, bar }) => {
   }
 
   return (
-    <div className="feed-card deal-card">
+    <div className="feed-card deal-card" onClick={onClick}>
       <span className="badge badge-deal">💰 DEAL</span>
 
       <div className="feed-card-header">

@@ -20,6 +20,8 @@ interface AppContextType {
   setActiveTab: (tab: TabType) => void
   searchQuery: string
   setSearchQuery: (query: string) => void
+  typeFilter: string
+  setTypeFilter: (filter: string) => void
   categoryFilter: string
   setCategoryFilter: (filter: string) => void
   locationFilter: string
@@ -30,6 +32,8 @@ interface AppContextType {
   // Modal State
   selectedEvent: Event | null
   setSelectedEvent: (event: Event | null) => void
+  selectedDeal: Deal | null
+  setSelectedDeal: (deal: Deal | null) => void
   selectedBar: Bar | null
   setSelectedBar: (bar: Bar | null) => void
   showAboutModal: boolean
@@ -47,12 +51,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [viewMode, setViewModeState] = useState<'unified' | 'tabs'>('unified')
   const [activeTab, setActiveTabState] = useState<TabType>('events')
   const [searchQuery, setSearchQueryState] = useState('')
+  const [typeFilter, setTypeFilterState] = useState('All')
   const [categoryFilter, setCategoryFilterState] = useState('All')
   const [locationFilter, setLocationFilterState] = useState('All')
   const [dayFilter, setDayFilterState] = useState('All')
 
   // Modal State
   const [selectedEvent, setSelectedEventState] = useState<Event | null>(null)
+  const [selectedDeal, setSelectedDealState] = useState<Deal | null>(null)
   const [selectedBar, setSelectedBarState] = useState<Bar | null>(null)
   const [showAboutModal, setShowAboutModalState] = useState(false)
   const [showForBarsModal, setShowForBarsModalState] = useState(false)
@@ -75,6 +81,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }
 
+  const setTypeFilter = (filter: string) => {
+    setTypeFilterState(filter)
+    trackEvent('Filter: Type', { type: filter })
+  }
+
   const setCategoryFilter = (filter: string) => {
     setCategoryFilterState(filter)
     trackEvent('Filter: Category', { category: filter })
@@ -93,7 +104,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const setSelectedEvent = (event: Event | null) => {
     setSelectedEventState(event)
     if (event) {
-      trackEvent('Event Click', { event_name: event.name })
+      const bar = bars.find(b => b.id === event.bar_id)
+      trackEvent('Event Click', {
+        event_name: event.name,
+        bar_name: bar?.name || 'Unknown'
+      })
+    }
+  }
+
+  const setSelectedDeal = (deal: Deal | null) => {
+    setSelectedDealState(deal)
+    if (deal) {
+      const bar = bars.find(b => b.id === deal.bar_id)
+      trackEvent('Deal Click', {
+        deal_name: deal.name,
+        bar_name: bar?.name || 'Unknown'
+      })
     }
   }
 
@@ -132,6 +158,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setActiveTab,
     searchQuery,
     setSearchQuery,
+    typeFilter,
+    setTypeFilter,
     categoryFilter,
     setCategoryFilter,
     locationFilter,
@@ -140,6 +168,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setDayFilter,
     selectedEvent,
     setSelectedEvent,
+    selectedDeal,
+    setSelectedDeal,
     selectedBar,
     setSelectedBar,
     showAboutModal,
