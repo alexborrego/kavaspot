@@ -7,6 +7,7 @@
 <meta name="description" content="Events, deals, and vibes — all in one place.">
 <link rel="canonical" href="https://alexborrego.github.io/kavaspot/">
 <link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <meta property="og:title" content="Bula Board - Your Weekly Guide to Kava in St. Pete">
 <meta property="og:description" content="Events, deals, and vibes — all in one place.">
 <meta property="og:type" content="website">
@@ -20,6 +21,31 @@
 <div class="logo-icon">🌿</div>
 <h1>Bula Board</h1>
 </div>
+<button class="nav-btn small" onclick="showAbout()">?</button>
+</div>
+</header>
+
+<div class="hero-section">
+<div class="hero-content">
+<span class="hero-badge">🌺 St. Pete's Kava Scene</span>
+<h2 class="hero-title">Find Your<br><em>Island</em> Vibes</h2>
+<p class="hero-subtitle">Weekly events, exclusive deals, and hidden gems across the best kava bars in town.</p>
+</div>
+<div class="hero-decoration">
+<span class="hero-emoji hero-emoji-1">🥥</span>
+<span class="hero-emoji hero-emoji-2">🌺</span>
+<span class="hero-emoji hero-emoji-3">🌿</span>
+</div>
+</div>
+
+<div class="search-container">
+<div class="search-box">
+<span class="search-icon">🔍</span>
+<input type="text" placeholder="Search events, bars, deals..." id="search" oninput="handleSearch(this.value)">
+</div>
+</div>
+
+<main class="main" id="mainContent">
 <button class="nav-btn small" onclick="showAbout()">?</button>
 </div>
 </header>
