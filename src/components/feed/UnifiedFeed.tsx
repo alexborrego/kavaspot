@@ -208,11 +208,7 @@ export const UnifiedFeed = () => {
   return (
     <div className="unified-feed">
       {limitedSections.happeningNow.length > 0 && (
-        <div className="feed-section sticky-section">
-          <h2 className="feed-section-title">
-            <span className="title-icon">🔴</span>
-            Happening Now
-          </h2>
+        <div className="feed-section">
           <div className="feed-section-content">
             {limitedSections.happeningNow.map(renderItem)}
           </div>
