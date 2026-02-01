@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KavaSpot - Your Weekly Guide to Kava in St. Pete</title>
+<title>Bula Board - Your Weekly Guide to Kava in St. Pete</title>
 <meta name="description" content="Events, deals, and vibes — all in one place.">
 <link rel="canonical" href="https://alexborrego.github.io/kavaspot/">
 <link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="KavaSpot - Your Weekly Guide to Kava in St. Pete">
+<meta property="og:title" content="Bula Board - Your Weekly Guide to Kava in St. Pete">
 <meta property="og:description" content="Events, deals, and vibes — all in one place.">
 <meta property="og:type" content="website">
 </head>
@@ -17,7 +17,7 @@
 <div class="header-content">
 <div class="logo">
 <div class="logo-icon">🌿</div>
-<h1>KavaSpot</h1>
+<h1>Bula Board</h1>
 </div>
 <button class="nav-btn small" onclick="showAbout()">?</button>
 </div>
@@ -26,7 +26,7 @@
 <section class="hero">
 <div class="hero-top">
 <div>
-<h2>This Week</h2>
+<h2>Tonight</h2>
 <p class="subtitle" id="subtitle">7 events • 5 bars</p>
 </div>
 <div class="date">
@@ -124,7 +124,7 @@
 </div>
 <div class="deal-card featured-deal">
 <span class="deal-fire">🔥</span>
-<h3>Best Deal This Week</h3>
+<h3>Best Deal Tonight</h3>
 <p>15% off KHB Botanicals</p>
 <span class="deal-location">Kava House Brand</span>
 <span class="deal-time">Mon-Fri • 3-6pm</span>
@@ -148,7 +148,7 @@
 </section>
 
 <footer class="footer">
-<p>KavaSpot • St. Pete + Clearwater</p>
+<p>Bula Board • St. Pete + Clearwater</p>
 <div class="footer-links">
 <a href="#" onclick="showAbout(); return false;">About</a>
 <a href="#" onclick="showForBars(); return false;">For Bars</a>
@@ -195,7 +195,7 @@
 <li><strong>Botanical Elixirs</strong> - Kava mixed with herbs and flavors</li>
 <li><strong>Kava Tea</strong> - Relaxing herbal tea blend</li>
 </ul>
-<h3>About KavaSpot</h3>
+<h3>About Bula Board</h3>
 <p>We curate the best kava bars, events, and deals in St. Petersburg and Clearwater. Whether you're a kava connoisseur or trying it for the first time, we've got you covered.</p>
 <p class="about-note">Please drink responsibly. Kava may cause drowsiness. Do not operate heavy machinery after consuming.</p>
 </div>
@@ -207,7 +207,7 @@
 <div class="modal-content" onclick="event.stopPropagation()">
 <button class="modal-close" onclick="closeForBarsModal()">✕</button>
 <div class="modal-body about-content">
-<h2>List Your Bar on KavaSpot</h2>
+<h2>List Your Bar on Bula Board</h2>
 <p>Reach thousands of kava enthusiasts in the St. Petersburg and Clearwater area.</p>
 <h3>What's Included</h3>
 <ul>
@@ -490,7 +490,7 @@ URL.revokeObjectURL(url);
 function shareEvent(name, bar, dayTime, shareUrl) {
 const text = `${name} at ${bar} - ${dayTime}\n\n${shareUrl}`;
 if (navigator.share) {
-navigator.share({ title: 'KavaSpot Event', text: text, url: shareUrl });
+navigator.share({ title: 'Bula Board Event', text: text, url: shareUrl });
 } else {
 navigator.clipboard.writeText(text);
 alert('Copied to clipboard!');
