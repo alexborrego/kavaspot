@@ -14,6 +14,8 @@ interface AppContextType {
   error: string | null
 
   // UI State
+  viewMode: 'unified' | 'tabs'
+  setViewMode: (mode: 'unified' | 'tabs') => void
   activeTab: TabType
   setActiveTab: (tab: TabType) => void
   searchQuery: string
@@ -42,6 +44,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const { bars, events, deals, categories, barHours, loading, error } = useSupabase()
 
   // UI State
+  const [viewMode, setViewModeState] = useState<'unified' | 'tabs'>('unified')
   const [activeTab, setActiveTabState] = useState<TabType>('events')
   const [searchQuery, setSearchQueryState] = useState('')
   const [categoryFilter, setCategoryFilterState] = useState('All')
@@ -55,6 +58,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [showForBarsModal, setShowForBarsModalState] = useState(false)
 
   // Wrapped setters with analytics
+  const setViewMode = (mode: 'unified' | 'tabs') => {
+    setViewModeState(mode)
+    trackEvent('View Mode Switch', { mode })
+  }
+
   const setActiveTab = (tab: TabType) => {
     setActiveTabState(tab)
     trackEvent('Tab Switch', { tab })
@@ -118,6 +126,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     barHours,
     loading,
     error,
+    viewMode,
+    setViewMode,
     activeTab,
     setActiveTab,
     searchQuery,

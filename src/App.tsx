@@ -2,6 +2,7 @@ import { AppProvider, useApp } from './context/AppContext'
 import { Header } from './components/common/Header'
 import { HeroSection } from './components/home/HeroSection'
 import { SearchBar } from './components/common/SearchBar'
+import { FilterChips } from './components/common/FilterChips'
 import { BottomNav } from './components/common/BottomNav'
 import { Loading } from './components/common/Loading'
 import { Newsletter } from './components/home/Newsletter'
@@ -10,10 +11,23 @@ import { ForBarsModal } from './components/modals/ForBarsModal'
 import { EventsTab } from './components/events/EventsTab'
 import { BarsTab } from './components/bars/BarsTab'
 import { DealsTab } from './components/deals/DealsTab'
+import { UnifiedFeed } from './components/feed/UnifiedFeed'
 import './styles/globals.css'
 
 const AppContent = () => {
-  const { loading, error, activeTab, setShowForBarsModal } = useApp()
+  const {
+    loading,
+    error,
+    viewMode,
+    activeTab,
+    setShowForBarsModal,
+    categories,
+    bars,
+    categoryFilter,
+    setCategoryFilter,
+    locationFilter,
+    setLocationFilter
+  } = useApp()
 
   if (loading) {
     return (
@@ -40,16 +54,47 @@ const AppContent = () => {
     )
   }
 
+  // Create filter chips
+  const categoryChips = [
+    { label: 'All', value: 'All' },
+    ...categories.map(cat => ({ label: cat.name, value: cat.id, icon: cat.icon || undefined }))
+  ]
+
+  const locationChips = [
+    { label: 'All Locations', value: 'All' },
+    ...Array.from(new Set(bars.map(b => b.city))).map(city => ({ label: city, value: city }))
+  ]
+
   return (
     <div className="app">
       <Header />
       <HeroSection />
       <SearchBar />
 
+      {/* Filter Section */}
+      <div className="filters-section">
+        <FilterChips
+          chips={categoryChips}
+          activeValue={categoryFilter}
+          onChange={setCategoryFilter}
+        />
+        <FilterChips
+          chips={locationChips}
+          activeValue={locationFilter}
+          onChange={setLocationFilter}
+        />
+      </div>
+
       <main className="main">
-        {activeTab === 'events' && <EventsTab />}
-        {activeTab === 'bars' && <BarsTab />}
-        {activeTab === 'deals' && <DealsTab />}
+        {viewMode === 'unified' ? (
+          <UnifiedFeed />
+        ) : (
+          <>
+            {activeTab === 'events' && <EventsTab />}
+            {activeTab === 'bars' && <BarsTab />}
+            {activeTab === 'deals' && <DealsTab />}
+          </>
+        )}
       </main>
 
       <Newsletter />
