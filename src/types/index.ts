@@ -17,6 +17,8 @@ export interface Bar {
   image_url: string | null
   is_active: boolean
   google_place_id: string | null
+  latitude: number | null
+  longitude: number | null
   created_at?: string
   updated_at?: string
 }

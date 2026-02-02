@@ -9,9 +9,11 @@ import { AboutModal } from './components/modals/AboutModal'
 import { ForBarsModal } from './components/modals/ForBarsModal'
 import { EventModal } from './components/modals/EventModal'
 import { DealModal } from './components/modals/DealModal'
+import { BarModal } from './components/modals/BarModal'
 import { EventsTab } from './components/events/EventsTab'
 import { BarsTab } from './components/bars/BarsTab'
 import { DealsTab } from './components/deals/DealsTab'
+import { MapTab } from './components/map/MapTab'
 import { UnifiedFeed } from './components/feed/UnifiedFeed'
 import './styles/globals.css'
 
@@ -20,7 +22,9 @@ const AppContent = () => {
     loading,
     error,
     viewMode,
+    setViewMode,
     activeTab,
+    setActiveTab,
     setShowForBarsModal,
     categories,
     bars,
@@ -94,7 +98,9 @@ const AppContent = () => {
       </div>
 
       <main className="main">
-        {viewMode === 'unified' ? (
+        {viewMode === 'map' ? (
+          <MapTab />
+        ) : viewMode === 'unified' ? (
           <UnifiedFeed />
         ) : (
           <>
@@ -120,6 +126,7 @@ const AppContent = () => {
       <ForBarsModal />
       <EventModal />
       <DealModal />
+      <BarModal />
     </div>
   )
 }

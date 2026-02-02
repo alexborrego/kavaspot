@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 import { useSupabase } from '../hooks/useSupabase'
 import { trackEvent } from '../utils/analytics'
 import type { TabType, Bar, Event, Deal, EventCategory, BarHours } from '../types'
@@ -12,6 +12,11 @@ interface AppContextType {
   barHours: BarHours[]
   loading: boolean
   error: string | null
+
+  // Favorites
+  favorites: string[]
+  setFavorites: (favorites: string[]) => void
+  toggleFavorite: (barId: string) => void
 
   // UI State
   viewMode: 'unified' | 'tabs'
@@ -44,6 +49,35 @@ const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { bars, events, deals, categories, barHours, loading, error } = useSupabase()
+
+  // Favorites (persisted in localStorage)
+  const [favorites, setFavoritesState] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('favoriteBars')
+      return saved ? JSON.parse(saved) : []
+    }
+    return []
+  })
+
+  useEffect(() => {
+    localStorage.setItem('favoriteBars', JSON.stringify(favorites))
+  }, [favorites])
+
+  const setFavorites = (favs: string[]) => {
+    setFavoritesState(favs)
+  }
+
+  const toggleFavorite = (barId: string) => {
+    const newFavorites = favorites.includes(barId)
+      ? favorites.filter(id => id !== barId)
+      : [...favorites, barId]
+    setFavoritesState(newFavorites)
+    const bar = bars.find(b => b.id === barId)
+    trackEvent('Toggle Favorite', {
+      bar_name: bar?.name || 'Unknown',
+      action: newFavorites.includes(barId) ? 'add' : 'remove'
+    })
+  }
 
   // UI State
   const [viewMode, setViewModeState] = useState<'unified' | 'tabs'>('unified')
@@ -144,6 +178,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     barHours,
     loading,
     error,
+    favorites,
+    setFavorites,
+    toggleFavorite,
     viewMode,
     setViewMode,
     activeTab,
