@@ -14,7 +14,7 @@ export const OnboardingModal = () => {
   const handleContinue = () => {
     localStorage.setItem('hasSeenOnboarding', 'true')
     setShowOnboarding(false)
-    // Enable favorites-only mode if any favorites selected
+    // Only enable favorites-only mode if favorites were selected
     if (favorites.length > 0) {
       setShowFavoritesOnly(true)
     }

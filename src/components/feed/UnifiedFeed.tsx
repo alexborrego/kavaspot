@@ -25,6 +25,11 @@ export const UnifiedFeed = () => {
   const filteredItems = useMemo(() => {
     const items: FeedItem[] = []
 
+    // Safety check: if favorites-only mode is on but no favorites selected, return empty
+    if (showFavoritesOnly && favorites.length === 0) {
+      return items
+    }
+
     // Check if we should show events (not filtering for deals only)
     const showEvents = !categoryFilter.includes('Deals') || categoryFilter.includes('All')
     const showDeals = categoryFilter.includes('All') || categoryFilter.includes('Deals')
