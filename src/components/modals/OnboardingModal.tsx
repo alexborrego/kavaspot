@@ -5,13 +5,14 @@ export const OnboardingModal = () => {
   const { favorites, setFavorites, bars, setShowFavoritesOnly, showOnboarding, setShowOnboarding } = useApp()
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Don't render anything if not showing
+  // Don't render if not showing
   if (!showOnboarding) {
     return null
   }
 
-  // Close modal and enable favorites mode if continuing
+  // Close modal and save to localStorage
   const handleContinue = () => {
+    localStorage.setItem('hasSeenOnboarding', 'true')
     setShowOnboarding(false)
     // Enable favorites-only mode if any favorites selected
     if (favorites.length > 0) {
@@ -24,6 +25,7 @@ export const OnboardingModal = () => {
 
   // Close modal without enabling favorites mode
   const handleSkip = () => {
+    localStorage.setItem('hasSeenOnboarding', 'true')
     setShowOnboarding(false)
     trackEvent('Onboarding Skipped')
   }
@@ -65,11 +67,6 @@ export const OnboardingModal = () => {
       return a.bar.name.localeCompare(b.bar.name)
     })
   }, [bars, favorites, searchQuery])
-
-  // Don't render if not showing
-  if (!showOnboarding) {
-    return null
-  }
 
   return (
     <div className="onboarding-overlay">

@@ -91,9 +91,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [locationFilter, setLocationFilterState] = useState<string[]>(['All'])
   const [dayFilter, setDayFilterState] = useState('All')
   const [showFavoritesOnly, setShowFavoritesOnlyState] = useState(false)
-  const [showOnboarding, setShowOnboardingState] = useState(false)
-
-  // Modal State
+  const [showOnboarding, setShowOnboardingState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const seen = localStorage.getItem('hasSeenOnboarding')
+      return !seen  // Show onboarding if NOT seen before
+    }
+    return false
+  })
   const [selectedEvent, setSelectedEventState] = useState<Event | null>(null)
   const [selectedDeal, setSelectedDealState] = useState<Deal | null>(null)
   const [selectedBar, setSelectedBarState] = useState<Bar | null>(null)
