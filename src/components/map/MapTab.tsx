@@ -5,6 +5,16 @@ import { getBarCoordinates } from '../../utils/barCoordinates'
 import type { Bar } from '../../types'
 import L from 'leaflet'
 
+// Fix for iOS - ensure Leaflet is properly initialized
+const initLeaflet = () => {
+  return new Promise<typeof L>((resolve) => {
+    // Small delay to ensure DOM is ready on iOS
+    setTimeout(() => {
+      resolve(L)
+    }, 100)
+  })
+}
+
 export const MapTab = () => {
   const { bars, setSelectedBar, favorites, setFavorites } = useApp()
   const mapRef = useRef<HTMLDivElement>(null)
@@ -18,68 +28,91 @@ export const MapTab = () => {
   useEffect(() => {
     if (!mapRef.current || mapLoaded) return
 
-    // Create map
-    const map = L.map(mapRef.current).setView(CENTER, 13)
+    let map: L.Map | null = null
 
-    // Add tile layer (OpenStreetMap)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map)
+    const setupMap = async () => {
+      try {
+        const Leaflet = await initLeaflet()
+        
+        if (!mapRef.current) return
 
-    // Add markers for each bar
-    bars.forEach((bar) => {
-      const coords = getBarCoordinates(bar.slug, bar.city)
-      const isFavorite = favorites.includes(bar.id)
-      
-      const marker = L.circleMarker([coords.lat, coords.lng], {
-        radius: isFavorite ? 14 : 10,
-        fillColor: isFavorite ? '#c45a47' : '#888',
-        color: '#fff',
-        weight: 2,
-        opacity: 1,
-        fillOpacity: 0.9
-      }).addTo(map)
+        // Create map with explicit options for iOS
+        map = Leaflet.map(mapRef.current, {
+          center: CENTER,
+          zoom: 13,
+          zoomControl: true,
+          attributionControl: true
+        })
 
-      marker.bindPopup(`
-        <div style="text-align: center; min-width: 150px;">
-          <strong>${bar.name}</strong><br/>
-          <span style="color: #888;">${bar.city || 'St. Pete'}</span><br/>
-          <button 
-            id="fav-${bar.id}"
-            style="
-              margin-top: 8px;
-              padding: 6px 12px;
-              background: ${isFavorite ? '#c45a47' : '#f0f0f0'};
-              color: ${isFavorite ? '#fff' : '#333'};
-              border: none;
-              border-radius: 6px;
-              cursor: pointer;
-              font-size: 12px;
-            "
-          >
-            ${isFavorite ? '★ Following' : '☆ Follow'}
-          </button>
-        </div>
-      `)
+        // Add tile layer (OpenStreetMap)
+        Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map)
 
-      marker.on('popupopen', () => {
-        setTimeout(() => {
-          const btn = document.getElementById(`fav-${bar.id}`)
-          if (btn) {
-            btn.onclick = () => toggleFavorite(bar.id)
-          }
-        }, 100)
-      })
-    })
+        // Add markers for each bar
+        bars.forEach((bar) => {
+          const coords = getBarCoordinates(bar.slug, bar.city)
+          const isFavorite = favorites.includes(bar.id)
+          
+          const marker = Leaflet.circleMarker([coords.lat, coords.lng], {
+            radius: isFavorite ? 14 : 10,
+            fillColor: isFavorite ? '#c45a47' : '#888',
+            color: '#fff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.9
+          }).addTo(map!)
 
-    leafletMapRef.current = map
-    setMapLoaded(true)
+          marker.bindPopup(`
+            <div style="text-align: center; min-width: 150px; padding: 8px;">
+              <strong>${bar.name}</strong><br/>
+              <span style="color: #888;">${bar.city || 'St. Pete'}</span><br/>
+              <button 
+                id="fav-${bar.id}"
+                style="
+                  margin-top: 8px;
+                  padding: 6px 12px;
+                  background: ${isFavorite ? '#c45a47' : '#f0f0f0'};
+                  color: ${isFavorite ? '#fff' : '#333'};
+                  border: none;
+                  border-radius: 6px;
+                  cursor: pointer;
+                  font-size: 12px;
+                  -webkit-tap-highlight-color: transparent;
+                "
+              >
+                ${isFavorite ? '★ Following' : '☆ Follow'}
+              </button>
+            </div>
+          `)
+
+          marker.on('popupopen', () => {
+            setTimeout(() => {
+              const btn = document.getElementById(`fav-${bar.id}`)
+              if (btn) {
+                btn.addEventListener('click', () => toggleFavorite(bar.id), { once: true })
+              }
+            }, 100)
+          })
+        })
+
+        leafletMapRef.current = map
+        setMapLoaded(true)
+      } catch (error) {
+        console.error('Error initializing map:', error)
+      }
+    }
+
+    setupMap()
 
     // Cleanup
     return () => {
-      map.remove()
+      if (map) {
+        map.remove()
+        map = null
+      }
     }
-  }, [bars, mapLoaded, favorites])
+  }, [bars, mapLoaded])
 
   const toggleFavorite = (barId: string) => {
     const newFavorites = favorites.includes(barId)
@@ -142,7 +175,9 @@ export const MapTab = () => {
                     border: 'none',
                     fontSize: '1.25rem',
                     cursor: 'pointer',
-                    color: favorites.includes(bar.id) ? '#c45a47' : '#ccc'
+                    color: favorites.includes(bar.id) ? '#c45a47' : '#ccc',
+                    padding: '0.25rem',
+                    WebkitTapHighlightColor: 'transparent'
                   }}
                 >
                   {favorites.includes(bar.id) ? '★' : '☆'}
@@ -153,7 +188,7 @@ export const MapTab = () => {
         </div>
       </div>
       
-      <div ref={mapRef} className="map-expand" />
+      <div ref={mapRef} className="map-expand" style={{ minHeight: '400px' }} />
     </div>
   )
 }

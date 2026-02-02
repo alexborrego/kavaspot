@@ -16,7 +16,7 @@ export const UnifiedFeed = () => {
   const {
     events, bars, deals, barHours, searchQuery,
     setSelectedEvent, setSelectedDeal, setSelectedBar,
-    categoryFilter, locationFilter
+    categoryFilter, locationFilter, favorites, showFavoritesOnly
   } = useApp()
 
   const [itemsToShow, setItemsToShow] = useState(10)
@@ -33,6 +33,12 @@ export const UnifiedFeed = () => {
     if (showEvents || categoryFilter.some(cat => cat !== 'Deals' && cat !== 'All')) {
       events.forEach(event => {
         const bar = bars.find(b => b.id === event.bar_id)
+        
+        // Filter by favorites if enabled
+        if (showFavoritesOnly && !favorites.includes(event.bar_id)) {
+          return
+        }
+
         const matchesSearch = searchQuery === '' ||
           event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
@@ -56,6 +62,12 @@ export const UnifiedFeed = () => {
     if (showDeals) {
       deals.forEach(deal => {
         const bar = bars.find(b => b.id === deal.bar_id)
+        
+        // Filter by favorites if enabled
+        if (showFavoritesOnly && !favorites.includes(deal.bar_id)) {
+          return
+        }
+
         const matchesSearch = searchQuery === '' ||
           deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
@@ -74,7 +86,7 @@ export const UnifiedFeed = () => {
     }
 
     return items.sort((a, b) => a.sortTime - b.sortTime)
-  }, [events, bars, deals, searchQuery, categoryFilter, locationFilter])
+  }, [events, bars, deals, searchQuery, categoryFilter, locationFilter, favorites, showFavoritesOnly])
 
   // Group items by time sections
   const sections = useMemo(() => {
