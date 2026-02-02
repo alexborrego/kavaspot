@@ -30,9 +30,9 @@ export const Header = () => {
             className="nav-btn small"
             onClick={() => setViewMode('map')}
             style={{ minWidth: 'auto', padding: '0.5rem 0.75rem' }}
-            aria-label="Map View"
+            aria-label="Favorites"
           >
-            🗺️
+            ★
           </button>
           <button
             className="nav-btn small"
