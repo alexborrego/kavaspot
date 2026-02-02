@@ -12,7 +12,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, bar, onClick }) => 
   const timeUntil = getTimeUntil(event)
 
   return (
-    <div className="feed-card event-card" onClick={onClick}>
+    <div className={`feed-card event-card ${happeningNow ? 'has-live-badge' : ''}`} onClick={onClick}>
       {happeningNow && <span className="badge badge-live">🔴 LIVE NOW</span>}
 
       <div className="feed-card-header">

@@ -41,8 +41,8 @@ export const DealsTab = () => {
       </div>
 
       {featuredDeal && dayFilter === 'All' && !searchQuery && (
-        <div className="deal-card featured-deal">
-          <span className="deal-fire">🔥</span>
+        <div className="deal-card featured-deal has-deal-badge">
+          <span className="badge badge-deal">🔥 HOT DEAL</span>
           <h3>Featured Deal</h3>
           <h4>{featuredDeal.name}</h4>
           <span className="deal-location">
@@ -63,7 +63,8 @@ export const DealsTab = () => {
           regularDeals.map(deal => {
             const bar = bars.find(b => b.id === deal.bar_id)
             return (
-              <div key={deal.id} className="deal-card-mini">
+              <div key={deal.id} className="deal-card-mini has-deal-badge">
+                <span className="badge badge-deal">🔥 DEAL</span>
                 <div className="deal-header">
                   <span className="deal-bar">{bar?.name || 'Unknown'}</span>
                 </div>
