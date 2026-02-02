@@ -1,5 +1,5 @@
 import type { Event, Bar } from '../../types'
-import { formatTime, getTimeUntil, isHappeningNow } from '../../utils/dateHelpers'
+import { formatTimeRange, getTimeUntil, isHappeningNow } from '../../utils/dateHelpers'
 
 interface EventCardProps {
   event: Event
@@ -29,8 +29,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event, bar, onClick }) => 
         <div className="feed-card-meta">
           {event.start_time && (
             <span className="meta-item">
-              ⏰ {formatTime(event.start_time)}
-              {event.end_time && `-${formatTime(event.end_time)}`}
+              ⏰ {formatTimeRange(event.start_time, event.end_time)}
             </span>
           )}
           {bar?.city && (

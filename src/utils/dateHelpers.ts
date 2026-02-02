@@ -18,6 +18,16 @@ export const formatTime = (time: string | null): string => {
   return `${hours12}:${minutes.toString().padStart(2, '0')} ${ampm}`
 }
 
+export const formatTimeRange = (startTime: string | null, endTime: string | null): string => {
+  const start = formatTime(startTime)
+  const end = formatTime(endTime)
+
+  if (start === 'TBD' && end === 'TBD') return 'Hours vary'
+  if (start === 'TBD') return `Until ${end}`
+  if (end === 'TBD') return `After ${start}`
+  return `${start} - ${end}`
+}
+
 export const getDayName = (dayIndex: number): string => {
   return DAYS_OF_WEEK[dayIndex] || 'TBD'
 }

@@ -1,5 +1,5 @@
 import type { Deal, Bar } from '../../types'
-import { formatTime, DAYS_OF_WEEK } from '../../utils/dateHelpers'
+import { formatTimeRange, DAYS_OF_WEEK } from '../../utils/dateHelpers'
 
 interface DealCardProps {
   deal: Deal
@@ -14,13 +14,7 @@ export const DealCard: React.FC<DealCardProps> = ({ deal, bar, onClick }) => {
   }
 
   const getValidTimes = () => {
-    if (deal.valid_start_time && deal.valid_end_time) {
-      return `${formatTime(deal.valid_start_time)} - ${formatTime(deal.valid_end_time)}`
-    }
-    if (deal.valid_start_time) {
-      return `After ${formatTime(deal.valid_start_time)}`
-    }
-    return 'All day'
+    return formatTimeRange(deal.valid_start_time, deal.valid_end_time)
   }
 
   return (

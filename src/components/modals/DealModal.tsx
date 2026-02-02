@@ -1,6 +1,6 @@
 import { Modal } from './Modal'
 import { useApp } from '../../context/AppContext'
-import { formatTime, DAYS_OF_WEEK } from '../../utils/dateHelpers'
+import { formatTimeRange, DAYS_OF_WEEK } from '../../utils/dateHelpers'
 
 export const DealModal = () => {
   const { selectedDeal, setSelectedDeal, bars } = useApp()
@@ -15,13 +15,7 @@ export const DealModal = () => {
   }
 
   const getValidTimes = () => {
-    if (selectedDeal.valid_start_time && selectedDeal.valid_end_time) {
-      return `${formatTime(selectedDeal.valid_start_time)} - ${formatTime(selectedDeal.valid_end_time)}`
-    }
-    if (selectedDeal.valid_start_time) {
-      return `After ${formatTime(selectedDeal.valid_start_time)}`
-    }
-    return 'All day'
+    return formatTimeRange(selectedDeal.valid_start_time, selectedDeal.valid_end_time)
   }
 
   return (

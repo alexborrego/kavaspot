@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { Modal } from './Modal'
 import { useApp } from '../../context/AppContext'
-import { formatTime, formatDate, DAYS_OF_WEEK, downloadCalendarEvent } from '../../utils/dateHelpers'
+import { formatTimeRange, formatDate, DAYS_OF_WEEK, downloadCalendarEvent } from '../../utils/dateHelpers'
+import { trackEvent } from '../../utils/analytics'
 
 export const EventModal = () => {
   const { selectedEvent, setSelectedEvent, bars } = useApp()
+  const [reminded, setReminded] = useState(false)
 
   if (!selectedEvent) return null
 
@@ -20,13 +23,7 @@ export const EventModal = () => {
   }
 
   const getEventTime = () => {
-    if (selectedEvent.start_time && selectedEvent.end_time) {
-      return `${formatTime(selectedEvent.start_time)} - ${formatTime(selectedEvent.end_time)}`
-    }
-    if (selectedEvent.start_time) {
-      return `Starting at ${formatTime(selectedEvent.start_time)}`
-    }
-    return 'Time TBD'
+    return formatTimeRange(selectedEvent.start_time, selectedEvent.end_time)
   }
 
   return (
@@ -66,9 +63,33 @@ export const EventModal = () => {
             onClick={(e) => {
               e.stopPropagation()
               downloadCalendarEvent(selectedEvent, bar)
+              trackEvent('Add to Calendar', {
+                event_name: selectedEvent.name,
+                bar_name: bar?.name || 'Unknown'
+              })
             }}
           >
             📅 Add to Calendar
+          </button>
+          <button
+            className="btn-secondary"
+            onClick={(e) => {
+              e.stopPropagation()
+              // Store reminder in localStorage
+              const reminders = JSON.parse(localStorage.getItem('eventReminders') || '[]')
+              if (!reminders.includes(selectedEvent.id)) {
+                reminders.push(selectedEvent.id)
+                localStorage.setItem('eventReminders', JSON.stringify(reminders))
+                setReminded(true)
+                trackEvent('Remind Me', {
+                  event_name: selectedEvent.name,
+                  bar_name: bar?.name || 'Unknown'
+                })
+              }
+            }}
+            disabled={reminded}
+          >
+            {reminded ? '✓ Reminder Set' : '🔔 Remind Me'}
           </button>
         </div>
       </div>

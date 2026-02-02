@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useApp } from '../../context/AppContext'
 import { EmptyState } from '../common/EmptyState'
-import { DAYS_OF_WEEK, formatTime } from '../../utils/dateHelpers'
+import { DAYS_OF_WEEK, formatTimeRange } from '../../utils/dateHelpers'
 
 export const DealsTab = () => {
   const { deals, bars, searchQuery, dayFilter, setDayFilter } = useApp()
@@ -72,14 +72,7 @@ export const DealsTab = () => {
                 {deal.description && <p className="deal-desc">{deal.description}</p>}
                 <div className="deal-meta">
                   <span>📍 {bar?.city || 'St. Pete'}</span>
-                  <span>
-                    ⏰{' '}
-                    {deal.valid_start_time
-                      ? `${formatTime(deal.valid_start_time)}-${
-                          formatTime(deal.valid_end_time) || 'Close'
-                        }`
-                      : 'All day'}
-                  </span>
+                  <span>⏰ {formatTimeRange(deal.valid_start_time, deal.valid_end_time)}</span>
                 </div>
               </div>
             )
