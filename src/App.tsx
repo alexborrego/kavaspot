@@ -10,6 +10,7 @@ import { ForBarsModal } from './components/modals/ForBarsModal'
 import { EventModal } from './components/modals/EventModal'
 import { DealModal } from './components/modals/DealModal'
 import { BarModal } from './components/modals/BarModal'
+import { OnboardingModal } from './components/modals/OnboardingModal'
 import { EventsTab } from './components/events/EventsTab'
 import { BarsTab } from './components/bars/BarsTab'
 import { DealsTab } from './components/deals/DealsTab'
@@ -127,6 +128,7 @@ const AppContent = () => {
       <EventModal />
       <DealModal />
       <BarModal />
+      <OnboardingModal />
     </div>
   )
 }

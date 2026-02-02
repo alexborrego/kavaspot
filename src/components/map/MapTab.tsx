@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useApp } from '../../context/AppContext'
 import { trackEvent } from '../../utils/analytics'
+import { getBarCoordinates } from '../../utils/barCoordinates'
 import type { Bar } from '../../types'
 
 export const MapTab = () => {
@@ -10,7 +11,7 @@ export const MapTab = () => {
   const [mapLoaded, setMapLoaded] = useState(false)
   const [selectedBarId, setSelectedBarId] = useState<string | null>(null)
 
-  // St. Petersburg coordinates
+  // St. Petersburg center
   const CENTER = [27.7731, -82.6400] as [number, number]
 
   useEffect(() => {
@@ -30,49 +31,48 @@ export const MapTab = () => {
 
       // Add markers for each bar
       bars.forEach((bar) => {
-        if (bar.latitude && bar.longitude) {
-          const isFavorite = favorites.includes(bar.id)
-          const marker = L.default.circleMarker([bar.latitude, bar.longitude], {
-            radius: 12,
-            fillColor: isFavorite ? '#c45a47' : '#888',
-            color: '#fff',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.9
-          }).addTo(map)
+        const coords = getBarCoordinates(bar.slug, bar.city)
+        
+        const isFavorite = favorites.includes(bar.id)
+        const marker = L.default.circleMarker([coords.lat, coords.lng], {
+          radius: isFavorite ? 14 : 10,
+          fillColor: isFavorite ? '#c45a47' : '#888',
+          color: '#fff',
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.9
+        }).addTo(map)
 
-          marker.bindPopup(`
-            <div style="text-align: center; min-width: 150px;">
-              <strong>${bar.name}</strong><br/>
-              <span style="color: #888;">${bar.city || 'St. Pete'}</span><br/>
-              <button 
-                id="fav-${bar.id}"
-                style="
-                  margin-top: 8px;
-                  padding: 6px 12px;
-                  background: ${isFavorite ? '#c45a47' : '#f0f0f0'};
-                  color: ${isFavorite ? '#fff' : '#333'};
-                  border: none;
-                  border-radius: 6px;
-                  cursor: pointer;
-                  font-size: 12px;
-                "
-              >
-                ${isFavorite ? '★ Following' : '☆ Follow'}
-              </button>
-            </div>
-          `)
+        marker.bindPopup(`
+          <div style="text-align: center; min-width: 150px;">
+            <strong>${bar.name}</strong><br/>
+            <span style="color: #888;">${bar.city || 'St. Pete'}</span><br/>
+            <button 
+              id="fav-${bar.id}"
+              style="
+                margin-top: 8px;
+                padding: 6px 12px;
+                background: ${isFavorite ? '#c45a47' : '#f0f0f0'};
+                color: ${isFavorite ? '#fff' : '#333'};
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 12px;
+              "
+            >
+              ${isFavorite ? '★ Following' : '☆ Follow'}
+            </button>
+          </div>
+        `)
 
-          marker.on('popupopen', () => {
-            // Add click handler for the follow button
-            setTimeout(() => {
-              const btn = document.getElementById(`fav-${bar.id}`)
-              if (btn) {
-                btn.onclick = () => toggleFavorite(bar.id)
-              }
-            }, 100)
-          })
-        }
+        marker.on('popupopen', () => {
+          setTimeout(() => {
+            const btn = document.getElementById(`fav-${bar.id}`)
+            if (btn) {
+              btn.onclick = () => toggleFavorite(bar.id)
+            }
+          }, 100)
+        })
       })
 
       leafletMapRef.current = map
@@ -101,9 +101,8 @@ export const MapTab = () => {
     trackEvent('Map: Bar Selected', { bar_name: bar.name })
   }
 
-  // Show bar list sidebar on mobile or when no map
   return (
-    <div className="map-container">
+    <div className="map-container map-full-width">
       <div className="map-sidebar">
         <h3 style={{ marginBottom: '1rem', fontFamily: 'Playfair Display' }}>
           {favorites.length > 0 ? 'Your Favorites' : 'All Bars'}
@@ -153,7 +152,7 @@ export const MapTab = () => {
         </div>
       </div>
       
-      <div ref={mapRef} className="map-view" style={{ flex: 1, minHeight: '400px' }} />
+      <div ref={mapRef} className="map-view map-expand" />
     </div>
   )
 }
