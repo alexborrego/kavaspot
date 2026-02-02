@@ -1,23 +1,17 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useApp } from '../../context/AppContext'
 
 export const OnboardingModal = () => {
-  const { favorites, setFavorites, bars, setShowFavoritesOnly } = useApp()
-  const [showOnboarding, setShowOnboarding] = useState(false)
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false)
+  const { favorites, setFavorites, bars, setShowFavoritesOnly, showOnboarding, setShowOnboarding } = useApp()
   const [searchQuery, setSearchQuery] = useState('')
 
-  useEffect(() => {
-    const seen = localStorage.getItem('hasSeenOnboarding')
-    if (!seen) {
-      setShowOnboarding(true)
-    } else {
-      setHasSeenOnboarding(true)
-    }
-  }, [])
+  // Don't render anything if not showing
+  if (!showOnboarding) {
+    return null
+  }
 
+  // Close modal and enable favorites mode if continuing
   const handleContinue = () => {
-    localStorage.setItem('hasSeenOnboarding', 'true')
     setShowOnboarding(false)
     // Enable favorites-only mode if any favorites selected
     if (favorites.length > 0) {
@@ -28,8 +22,8 @@ export const OnboardingModal = () => {
     })
   }
 
+  // Close modal without enabling favorites mode
   const handleSkip = () => {
-    localStorage.setItem('hasSeenOnboarding', 'true')
     setShowOnboarding(false)
     trackEvent('Onboarding Skipped')
   }
@@ -71,11 +65,6 @@ export const OnboardingModal = () => {
       return a.bar.name.localeCompare(b.bar.name)
     })
   }, [bars, favorites, searchQuery])
-
-  // Don't render anything if onboarding is done
-  if (hasSeenOnboarding && !showOnboarding) {
-    return null
-  }
 
   // Don't render if not showing
   if (!showOnboarding) {

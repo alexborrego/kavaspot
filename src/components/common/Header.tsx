@@ -1,7 +1,7 @@
 import { useApp } from '../../context/AppContext'
 
 export const Header = () => {
-  const { setShowAboutModal, setViewMode, favorites, showFavoritesOnly, setShowFavoritesOnly } = useApp()
+  const { setShowAboutModal, favorites, showFavoritesOnly, setShowFavoritesOnly, setShowOnboarding } = useApp()
 
   return (
     <header className="header">
@@ -28,7 +28,7 @@ export const Header = () => {
           )}
           <button
             className="nav-btn small"
-            onClick={() => setViewMode('map')}
+            onClick={() => setShowOnboarding(true)}
             style={{ minWidth: 'auto', padding: '0.5rem 0.75rem' }}
             aria-label="Favorites"
           >

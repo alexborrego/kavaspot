@@ -19,6 +19,8 @@ interface AppContextType {
   toggleFavorite: (barId: string) => void
   showFavoritesOnly: boolean
   setShowFavoritesOnly: (show: boolean) => void
+  showOnboarding: boolean
+  setShowOnboarding: (show: boolean) => void
 
   // UI State
   viewMode: 'unified' | 'tabs' | 'map'
@@ -89,6 +91,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [locationFilter, setLocationFilterState] = useState<string[]>(['All'])
   const [dayFilter, setDayFilterState] = useState('All')
   const [showFavoritesOnly, setShowFavoritesOnlyState] = useState(false)
+  const [showOnboarding, setShowOnboardingState] = useState(false)
 
   // Modal State
   const [selectedEvent, setSelectedEventState] = useState<Event | null>(null)
@@ -186,6 +189,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     toggleFavorite,
     showFavoritesOnly,
     setShowFavoritesOnly: setShowFavoritesOnlyState,
+    showOnboarding,
+    setShowOnboarding: setShowOnboardingState,
     viewMode,
     setViewMode,
     activeTab,
