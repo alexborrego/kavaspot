@@ -12,22 +12,26 @@ export const OnboardingModal = () => {
 
   // Close modal and save to localStorage
   const handleContinue = () => {
-    localStorage.setItem('hasSeenOnboarding', 'true')
+    try {
+      localStorage.setItem('hasSeenOnboarding', 'true')
+    } catch (e) {
+      // Ignore localStorage errors
+    }
     setShowOnboarding(false)
     // Only enable favorites-only mode if favorites were selected
     if (favorites.length > 0) {
       setShowFavoritesOnly(true)
     }
-    trackEvent('Onboarding Complete', {
-      favorites_count: favorites.length
-    })
   }
 
   // Close modal without enabling favorites mode
   const handleSkip = () => {
-    localStorage.setItem('hasSeenOnboarding', 'true')
+    try {
+      localStorage.setItem('hasSeenOnboarding', 'true')
+    } catch (e) {
+      // Ignore localStorage errors
+    }
     setShowOnboarding(false)
-    trackEvent('Onboarding Skipped')
   }
 
   const toggleFavorite = (barId: string) => {
@@ -36,17 +40,19 @@ export const OnboardingModal = () => {
       : [...favorites, barId]
     
     setFavorites(newFavorites)
-    localStorage.setItem('favoriteBars', JSON.stringify(newFavorites))
-    
-    const bar = bars.find(b => b.id === barId)
-    trackEvent('Toggle Favorite', {
-      bar_name: bar?.name || 'Unknown',
-      action: newFavorites.includes(barId) ? 'add' : 'remove'
-    })
+    try {
+      localStorage.setItem('favoriteBars', JSON.stringify(newFavorites))
+    } catch (e) {
+      // Ignore localStorage errors
+    }
   }
 
   // Filter and sort bars
   const filteredBars = useMemo(() => {
+    if (!bars || bars.length === 0) {
+      return []
+    }
+    
     const allBars = bars.map(bar => ({
       bar,
       isFavorite: favorites.includes(bar.id)
@@ -55,8 +61,8 @@ export const OnboardingModal = () => {
     // Filter by search
     const filtered = searchQuery
       ? allBars.filter(({ bar }) => 
-          bar.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          bar.city?.toLowerCase().includes(searchQuery.toLowerCase())
+          (bar.name && bar.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (bar.city && bar.city.toLowerCase().includes(searchQuery.toLowerCase()))
         )
       : allBars
 
@@ -64,7 +70,7 @@ export const OnboardingModal = () => {
     return filtered.sort((a, b) => {
       if (a.isFavorite && !b.isFavorite) return -1
       if (!a.isFavorite && b.isFavorite) return 1
-      return a.bar.name.localeCompare(b.bar.name)
+      return (a.bar.name || '').localeCompare(b.bar.name || '')
     })
   }, [bars, favorites, searchQuery])
 
@@ -217,11 +223,4 @@ export const OnboardingModal = () => {
       </div>
     </div>
   )
-}
-
-// Simple tracking function for onboarding
-const trackEvent = (eventName: string, props?: Record<string, any>) => {
-  if (typeof window.plausible !== 'undefined') {
-    window.plausible(eventName, props ? { props } : undefined)
-  }
 }

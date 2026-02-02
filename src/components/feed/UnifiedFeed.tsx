@@ -30,6 +30,11 @@ export const UnifiedFeed = () => {
       return items
     }
 
+    // Safety check for arrays
+    if (!events || !deals || !bars) {
+      return items
+    }
+
     // Check if we should show events (not filtering for deals only)
     const showEvents = !categoryFilter.includes('Deals') || categoryFilter.includes('All')
     const showDeals = categoryFilter.includes('All') || categoryFilter.includes('Deals')
@@ -37,6 +42,8 @@ export const UnifiedFeed = () => {
     // Add events
     if (showEvents || categoryFilter.some(cat => cat !== 'Deals' && cat !== 'All')) {
       events.forEach(event => {
+        if (!event) return
+        
         const bar = bars.find(b => b.id === event.bar_id)
         
         // Filter by favorites if enabled
@@ -45,8 +52,8 @@ export const UnifiedFeed = () => {
         }
 
         const matchesSearch = searchQuery === '' ||
-          event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+          (event.name && event.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (bar?.name && bar.name.toLowerCase().includes(searchQuery.toLowerCase()))
 
         const matchesCategory = categoryFilter.includes('All') ||
           (event.event_category_id && categoryFilter.includes(event.event_category_id))
@@ -66,6 +73,8 @@ export const UnifiedFeed = () => {
     // Add deals
     if (showDeals) {
       deals.forEach(deal => {
+        if (!deal) return
+        
         const bar = bars.find(b => b.id === deal.bar_id)
         
         // Filter by favorites if enabled
@@ -74,8 +83,8 @@ export const UnifiedFeed = () => {
         }
 
         const matchesSearch = searchQuery === '' ||
-          deal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (bar?.name.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
+          (deal.name && deal.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (bar?.name && bar.name.toLowerCase().includes(searchQuery.toLowerCase()))
 
         const matchesLocation = locationFilter.includes('All') || (bar?.city && locationFilter.includes(bar.city))
 
