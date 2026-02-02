@@ -1,6 +1,6 @@
 import { Modal } from './Modal'
 import { useApp } from '../../context/AppContext'
-import { DAYS_OF_WEEK, formatTime } from '../../utils/dateHelpers'
+import { formatTime } from '../../utils/dateHelpers'
 
 export const BarModal = () => {
   const { selectedBar, setSelectedBar, barHours } = useApp()

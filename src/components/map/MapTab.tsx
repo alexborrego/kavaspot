@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext'
 import { trackEvent } from '../../utils/analytics'
 import { getBarCoordinates } from '../../utils/barCoordinates'
 import type { Bar } from '../../types'
+import L from 'leaflet'
 
 export const MapTab = () => {
   const { bars, setSelectedBar, favorites, setFavorites } = useApp()
@@ -12,73 +13,73 @@ export const MapTab = () => {
   const [selectedBarId, setSelectedBarId] = useState<string | null>(null)
 
   // St. Petersburg center
-  const CENTER = [27.7731, -82.6400] as [number, number]
+  const CENTER: L.LatLngExpression = [27.7731, -82.6400]
 
   useEffect(() => {
     if (!mapRef.current || mapLoaded) return
 
-    // Dynamically import Leaflet to avoid SSR issues
-    import('leaflet').then((L) => {
-      if (!mapRef.current) return
+    // Create map
+    const map = L.map(mapRef.current).setView(CENTER, 13)
 
-      // Create map
-      const map = L.default.map(mapRef.current).setView(CENTER, 13)
+    // Add tile layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map)
 
-      // Add tile layer (OpenStreetMap)
-      L.default.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+    // Add markers for each bar
+    bars.forEach((bar) => {
+      const coords = getBarCoordinates(bar.slug, bar.city)
+      const isFavorite = favorites.includes(bar.id)
+      
+      const marker = L.circleMarker([coords.lat, coords.lng], {
+        radius: isFavorite ? 14 : 10,
+        fillColor: isFavorite ? '#c45a47' : '#888',
+        color: '#fff',
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.9
       }).addTo(map)
 
-      // Add markers for each bar
-      bars.forEach((bar) => {
-        const coords = getBarCoordinates(bar.slug, bar.city)
-        
-        const isFavorite = favorites.includes(bar.id)
-        const marker = L.default.circleMarker([coords.lat, coords.lng], {
-          radius: isFavorite ? 14 : 10,
-          fillColor: isFavorite ? '#c45a47' : '#888',
-          color: '#fff',
-          weight: 2,
-          opacity: 1,
-          fillOpacity: 0.9
-        }).addTo(map)
+      marker.bindPopup(`
+        <div style="text-align: center; min-width: 150px;">
+          <strong>${bar.name}</strong><br/>
+          <span style="color: #888;">${bar.city || 'St. Pete'}</span><br/>
+          <button 
+            id="fav-${bar.id}"
+            style="
+              margin-top: 8px;
+              padding: 6px 12px;
+              background: ${isFavorite ? '#c45a47' : '#f0f0f0'};
+              color: ${isFavorite ? '#fff' : '#333'};
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              font-size: 12px;
+            "
+          >
+            ${isFavorite ? '★ Following' : '☆ Follow'}
+          </button>
+        </div>
+      `)
 
-        marker.bindPopup(`
-          <div style="text-align: center; min-width: 150px;">
-            <strong>${bar.name}</strong><br/>
-            <span style="color: #888;">${bar.city || 'St. Pete'}</span><br/>
-            <button 
-              id="fav-${bar.id}"
-              style="
-                margin-top: 8px;
-                padding: 6px 12px;
-                background: ${isFavorite ? '#c45a47' : '#f0f0f0'};
-                color: ${isFavorite ? '#fff' : '#333'};
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 12px;
-              "
-            >
-              ${isFavorite ? '★ Following' : '☆ Follow'}
-            </button>
-          </div>
-        `)
-
-        marker.on('popupopen', () => {
-          setTimeout(() => {
-            const btn = document.getElementById(`fav-${bar.id}`)
-            if (btn) {
-              btn.onclick = () => toggleFavorite(bar.id)
-            }
-          }, 100)
-        })
+      marker.on('popupopen', () => {
+        setTimeout(() => {
+          const btn = document.getElementById(`fav-${bar.id}`)
+          if (btn) {
+            btn.onclick = () => toggleFavorite(bar.id)
+          }
+        }, 100)
       })
-
-      leafletMapRef.current = map
-      setMapLoaded(true)
     })
-  }, [bars, mapLoaded])
+
+    leafletMapRef.current = map
+    setMapLoaded(true)
+
+    // Cleanup
+    return () => {
+      map.remove()
+    }
+  }, [bars, mapLoaded, favorites])
 
   const toggleFavorite = (barId: string) => {
     const newFavorites = favorites.includes(barId)
@@ -152,7 +153,7 @@ export const MapTab = () => {
         </div>
       </div>
       
-      <div ref={mapRef} className="map-view map-expand" />
+      <div ref={mapRef} className="map-expand" />
     </div>
   )
 }

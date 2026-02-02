@@ -19,8 +19,8 @@ interface AppContextType {
   toggleFavorite: (barId: string) => void
 
   // UI State
-  viewMode: 'unified' | 'tabs'
-  setViewMode: (mode: 'unified' | 'tabs') => void
+  viewMode: 'unified' | 'tabs' | 'map'
+  setViewMode: (mode: 'unified' | 'tabs' | 'map') => void
   activeTab: TabType
   setActiveTab: (tab: TabType) => void
   searchQuery: string
@@ -80,7 +80,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }
 
   // UI State
-  const [viewMode, setViewModeState] = useState<'unified' | 'tabs'>('unified')
+  const [viewMode, setViewModeState] = useState<'unified' | 'tabs' | 'map'>('unified')
   const [activeTab, setActiveTabState] = useState<TabType>('events')
   const [searchQuery, setSearchQueryState] = useState('')
   const [categoryFilter, setCategoryFilterState] = useState<string[]>(['All'])
@@ -95,7 +95,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [showForBarsModal, setShowForBarsModalState] = useState(false)
 
   // Wrapped setters with analytics
-  const setViewMode = (mode: 'unified' | 'tabs') => {
+  const setViewMode = (mode: 'unified' | 'tabs' | 'map') => {
     setViewModeState(mode)
     trackEvent('View Mode Switch', { mode })
   }

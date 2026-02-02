@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useApp } from '../../context/AppContext'
-import { MapTab } from './MapTab'
+import { MapTab } from '../map/MapTab'
 
 export const OnboardingModal = () => {
-  const { favorites, setFavorites } = useApp()
+  const { favorites } = useApp()
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false)
 
